@@ -1,0 +1,4 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="message-page wrap"><p class="eyebrow">ESPACE ADHÉRENT</p><h1>{{ title }}</h1><p>{{ message }}</p><a class="button primary" href="{{ continue_url or '/' }}">{{ 'Continuer vers l’inscription' if continue_url else 'Retour aux ateliers' }} <span aria-hidden="true">→</span></a></section>
+{% endblock %}

@@ -216,3 +216,12 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Données locales et vérifications du démonstrateur
+/data/
+/output/
+/test-results/
+
+# Configuration locale Bedrock (ne jamais versionner de clé)
+.env.*
+!.env.*.example

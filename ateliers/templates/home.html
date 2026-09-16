@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero wrap">
+  <div class="hero-copy">
+    <p class="eyebrow"><span class="small-dot"></span> BORDEAUX · VIE DE QUARTIER</p>
+    <h1>Les ateliers<br>du quartier<span class="accent">.</span></h1>
+    <p class="hero-tagline">Un peu de curiosité.<br>Beaucoup à partager.</p>
+    <p class="hero-description">Programme d’activités et modalités d’inscription — automne 2026</p>
+    <a class="button primary" href="/compte/creation">Constituer mon dossier <span aria-hidden="true">↗</span></a>
+    <a class="text-link" href="#ateliers">Découvrir le programme <span aria-hidden="true">↓</span></a>
+  </div>
+  <div class="hero-art" aria-hidden="true">
+    <div class="poster-top">LES ATELIERS DU QUARTIER <span>SAISON N° 01</span></div>
+    <div class="poster-shapes"><div class="shape shape-one"></div><div class="shape shape-two"></div><div class="shape shape-three"></div><div class="shape shape-four"></div></div>
+    <div class="poster-word">Faire.<br><em>Ensemble.</em></div>
+    <div class="poster-bottom">CRÉER · APPRENDRE · RENCONTRER <span>AUTOMNE<br>2026</span></div>
+  </div>
+</section>
+<div class="season-strip"><div class="wrap"><span>LA SAISON EST OUVERTE</span><span>Peinture <b>✳</b> Poterie <b>✳</b> Photographie</span><span>OCTOBRE 2026</span></div></div>
+<section id="ateliers" class="catalog wrap">
+  <div class="section-heading"><div><p class="eyebrow">LE PROGRAMME</p><h2>À chacun son atelier.</h2></div><p>Trois façons de découvrir,<br>de créer et de se rencontrer.</p></div>
+  <div class="activity-grid">
+    {% for key, activity in activities.items() %}
+    <article class="activity-card">
+      <div class="activity-art art-{{ key }}" aria-hidden="true"><span class="art-number">{{ activity.number }}</span><div class="art-object object-one"></div><div class="art-object object-two"></div><div class="art-object object-three"></div><span class="art-caption">LES ATELIERS DU QUARTIER</span></div>
+      <div class="activity-body"><p class="eyebrow">{{ activity.category }}</p><h3>{{ activity.short_name }}</h3><p>{{ activity.description }}</p>
+        <ul class="slot-list">{% for slot in activity.slots.values() %}<li>{{ slot }}</li>{% endfor %}</ul>
+        <a href="/compte/creation" class="activity-link">Constituer mon dossier <span aria-hidden="true">↗</span></a>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+</section>
+<section id="modalites" class="about wrap">
+  <div class="about-title"><p class="eyebrow">L’ASSOCIATION</p><h2>Le quartier,<br>en commun.</h2><span class="about-symbol" aria-hidden="true">✳</span></div>
+  <div class="administrative-copy"><h3>Dispositions générales et modalités de participation</h3>{% for paragraph in catalog_text %}<p>{{ paragraph }}</p>{% endfor %}</div>
+</section>
+{% endblock %}

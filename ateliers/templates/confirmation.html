@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="confirmation wrap" data-clear-draft="registration" data-session="{{ session.csrf }}">
+  <p class="eyebrow">LES ATELIERS DU QUARTIER · VOTRE DOSSIER</p>
+  <div class="confirmation-mark" aria-hidden="true">✓</div>
+  <h1>Inscription enregistrée<span class="accent">.</span></h1>
+  <p class="confirmation-intro">Votre inscription a bien été enregistrée. Retrouvez ci-dessous les informations de votre séance. Aucun paiement n’est demandé.</p>
+  <div class="receipt"><div class="receipt-top"><span>RÉFÉRENCE D’INSCRIPTION</span><strong id="registration-reference">{{ registration.reference }}</strong></div>
+    <h2>{{ activities[registration.activity].name }}</h2>
+    <p class="receipt-slot">{{ activities[registration.activity].slots[registration.slot] }}</p>
+    <p>{{ location }}</p>
+    <dl class="receipt-grid"><div><dt>Participant</dt><dd>{{ registration.first_name }} {{ registration.last_name }}</dd></div><div><dt>Adresse électronique</dt><dd>{{ registration.email }}</dd></div><div><dt>Positionnement expérientiel</dt><dd>{{ experiences[registration.experience] }}</dd></div><div><dt>Attentes</dt><dd><ul>{% for key in registration.expectations %}<li>{{ expectations[key] }}</li>{% endfor %}</ul></dd></div><div class="wide"><dt>Présentation française</dt><dd class="preserve-lines">{{ registration.presentation_fr }}</dd></div>{% if registration.activity == 'photo' %}<div class="wide"><dt>Présentation anglaise</dt><dd lang="en" class="preserve-lines">{{ registration.presentation_en }}</dd></div>{% endif %}<div><dt>Conditions de participation</dt><dd>Acceptées</dd></div><div><dt>Actualités associatives</dt><dd>{{ 'Acceptées' if registration.newsletter else 'Refusées' }}</dd></div></dl>
+    <div class="receipt-end">Participation gratuite · Matériel fourni</div>
+  </div>
+  <a class="button primary" href="/">Retour aux ateliers <span aria-hidden="true">↗</span></a>
+</section>
+{% endblock %}

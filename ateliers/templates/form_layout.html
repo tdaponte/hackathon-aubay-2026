@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="wrap form-page">
+  <a href="/" class="back-link"><span aria-hidden="true">←</span> Retour aux ateliers</a>
+  <div class="page-heading"><p class="eyebrow">ESPACE ADHÉRENT · AUTOMNE 2026</p><h1>{{ title }}</h1></div>
+  <div class="form-layout">
+    <section class="form-card">
+      {% if errors %}<div class="error-summary"><h2>Anomalies de saisie</h2><ul>{% for error in errors %}<li>{{ error }}</li>{% endfor %}</ul></div>{% endif %}
+      {% block form_content %}{% endblock %}
+    </section>
+    <aside class="dossier-aside"><div class="aside-symbol" aria-hidden="true">✳</div><p class="eyebrow">LES ATELIERS DU QUARTIER</p><h2>Une place<br>pour la curiosité.</h2><p>Peinture, poterie, photographie : faites une place à une nouvelle activité dans votre quotidien.</p><div class="aside-details"><span>PROGRAMMATION</span><p>Automne 2026</p><span>LIEU</span><p>{{ location }}</p></div><a href="/#modalites">Modalités de participation ↗</a></aside>
+  </div>
+</div>
+{% endblock %}

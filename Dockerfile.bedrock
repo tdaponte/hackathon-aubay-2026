@@ -1,0 +1,7 @@
+FROM python:3.12-slim
+WORKDIR /app
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 AWS_EC2_METADATA_DISABLED=true
+COPY requirements-bedrock.txt .
+RUN pip install --no-cache-dir -r requirements-bedrock.txt
+COPY scripts/check_bedrock.py ./scripts/check_bedrock.py
+ENTRYPOINT ["python", "scripts/check_bedrock.py"]

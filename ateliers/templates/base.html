@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Les ateliers du quartier — programme associatif fictif, Bordeaux, automne 2026.">
+  <title>{{ title }} · Les ateliers du quartier</title>
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/site.css">
+  <script src="/static/site.js" defer></script>
+</head>
+<body>
+  <div class="demo-banner">Site fictif — démonstration du hackathon. Utilisez uniquement des données fictives.</div>
+  <header class="masthead wrap">
+    <a class="brand" href="/" aria-label="Les ateliers du quartier — accueil">
+      <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+      <span>les ateliers<br><strong>du quartier.</strong></span>
+    </a>
+    <nav aria-label="Navigation principale">
+      <a href="/#ateliers">Nos ateliers</a>
+      <a href="/#modalites">L’association</a>
+      <a class="nav-account" href="/compte/creation">Espace adhérent <span aria-hidden="true">↗</span></a>
+    </nav>
+  </header>
+  <main>{% block content %}{% endblock %}</main>
+  <footer class="footer wrap">
+    <a class="footer-brand" href="/">les ateliers du quartier.</a>
+    <p>Faire ensemble, tout simplement.</p>
+    <span>Bordeaux · Association fictive · 2026</span>
+  </footer>
+</body>
+</html>
