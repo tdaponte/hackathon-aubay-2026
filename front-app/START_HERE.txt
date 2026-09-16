@@ -1,0 +1,155 @@
+📋 PROJET STREAMLIT - STRUCTURE ET FLUX
+=========================================
+
+📁 Fichiers créés:
+├── app.py                      ← 🎨 INTERFACE UTILISATEUR (Streamlit)
+├── webhook_server.py           ← 🔌 SERVEUR WEBHOOK (Flask)
+├── test_send_field.py          ← 🧪 TESTS
+├── requirements.txt            ← 📦 DÉPENDANCES STREAMLIT
+├── requirements-webhook.txt    ← 📦 DÉPENDANCES FLASK
+├── README.md                   ← 📚 DOCUMENTATION
+├── DEVELOPER_GUIDE.py          ← 🛠️ GUIDE DÉVELOPPEUR
+└── .env.example                ← ⚙️ CONFIGURATION
+
+============================================================================
+
+FLUX DE L'APPLICATION:
+
+┌─────────────────────────────────────────────────────────────────────┐
+│                        AUTRE APPLICATION                              │
+│                     (développée en parallèle)                        │
+│                                                                       │
+│  ┌──────────────────────────────────────────────────────────────┐  │
+│  │ "Envoie-moi afficher ce champ à l'utilisateur"              │  │
+│  │  POST /receive_field                                         │  │
+│  │  {                                                            │  │
+│  │    "field": {                                                │  │
+│  │      "type": "text",                                        │  │
+│  │      "text": "Quel est votre nom ?",                       │  │
+│  │      "placeholder": "..."                                  │  │
+│  │    },                                                        │  │
+│  │    "response_url": "http://autre-app:5000/webhook/response"│  │
+│  │  }                                                            │  │
+│  └──────────────────────────────────────────────────────────────┘  │
+│                                  │                                    │
+│                                  ▼                                    │
+│                          (Webhook reçu)                              │
+└─────────────────────────────────────────────────────────────────────┘
+                                  │
+                                  │ HTTP POST
+                                  ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                 WEBHOOK_SERVER.PY (PORT 8502)                        │
+│                                                                       │
+│  • Reçoit les webhooks                                              │
+│  • Valide le format du JSON                                         │
+│  • Sauvegarde les données dans current_field.json                   │
+│  • Communique avec Streamlit                                        │
+└─────────────────────────────────────────────────────────────────────┘
+                                  │
+                                  │ Fichier JSON partagé
+                                  ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                      APP.PY (PORT 8501)                              │
+│                      🎨 STREAMLIT INTERFACE                          │
+│                                                                       │
+│  Affiche à l'écran:                                                 │
+│  ┌─────────────────────────────────┐                              │
+│  │     Quel est votre nom ?         │                              │
+│  │                                 │                              │
+│  │  ┌──────────────────────────┐   │                              │
+│  │  │ [Entrez votre réponse] │   │                              │
+│  │  └──────────────────────────┘   │                              │
+│  │                                 │                              │
+│  │  ┌──────────┐                   │                              │
+│  │  │ ✓ Valider │                   │                              │
+│  │  └──────────┘                   │                              │
+│  └─────────────────────────────────┘                              │
+│                                                                       │
+│  Utilisateur tape sa réponse et clique "Valider"                    │
+└─────────────────────────────────────────────────────────────────────┘
+                                  │
+                                  │ Utilisateur entre "Jean Dupont"
+                                  ▼
+                          (Bouton cliqué)
+                                  │
+                                  │ La réponse est traitée
+                                  ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│             WEBHOOK_SERVER.PY - Envoie la réponse                    │
+│                                                                       │
+│  POST http://autre-app:5000/webhook/response                       │
+│  {                                                                   │
+│    "response": "Jean Dupont"                                        │
+│  }                                                                   │
+└─────────────────────────────────────────────────────────────────────┘
+                                  │
+                                  │ HTTP POST
+                                  ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                        AUTRE APPLICATION                              │
+│                                                                       │
+│  ✓ Réponse reçue: "Jean Dupont"                                     │
+│  → Enregistre dans sa base de données                               │
+│  → Envoie le champ suivant...                                       │
+│  → POST /receive_field (champ 2)                                    │
+│                                                                       │
+│  ➜ Le cycle recommence!                                            │
+└─────────────────────────────────────────────────────────────────────┘
+
+============================================================================
+
+COMMENT DÉMARRER:
+
+1️⃣  Terminal 1 - App Streamlit
+   cd streamlit-simple-form-app
+   pip install -r requirements.txt
+   streamlit run app.py
+   ➜ http://localhost:8501
+
+2️⃣  Terminal 2 - Serveur Webhook
+   pip install -r requirements-webhook.txt
+   python webhook_server.py
+   ➜ http://localhost:8502
+
+3️⃣  Terminal 3 - Tests (optionnel)
+   python test_send_field.py
+   (envoie des champs de test automatiquement)
+
+============================================================================
+
+POUR TESTER SANS L'AUTRE APP:
+
+$ python test_send_field.py
+
+Ça envoie automatiquement:
+→ Champ texte "Quel est votre nom ?"
+→ Attends 5 sec
+→ Champ date "Quelle est votre date de naissance ?"
+
+Regardez Streamlit pour voir les champs s'afficher!
+
+============================================================================
+
+PROCHAINES ÉTAPES:
+
+✅ Structure de base: FAIT
+✅ Champ texte: FAIT
+✅ Webhooks bidirectionnels: FAIT
+
+📋 À faire (vous):
+- [ ] Adapter aux besoins d'accessibilité (grandes polices, couleurs)
+- [ ] Ajouter les autres types de champs (date, nombre, etc.)
+- [ ] Intégrer avec l'autre app
+- [ ] Tester en direct
+- [ ] Améliorer l'UX si nécessaire
+
+============================================================================
+
+RESSOURCES:
+- README.md: Guide complet d'utilisation
+- DEVELOPER_GUIDE.py: Guide approfondi (concepts, erreurs courantes, etc.)
+- .env.example: Configuration de base
+
+Besoin d'aide? Consultez les fichiers ci-dessus ou regardez les liens
+dans README.md
