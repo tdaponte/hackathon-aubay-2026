@@ -180,10 +180,16 @@ st.markdown("""
         margin-left: 10px;
     }
     
+    .paused-overlay {
+       opacity: 0.6;
+       filter: grayscale(100%) brightness(0.9);
+       pointer-events: none;
+    }
+    
     .debug-section {
-        margin-top: 50px;
-        padding-top: 30px;
-        border-top: 2px solid #ecf0f1;
+       margin-top: 50px;
+       padding-top: 30px;
+       border-top: 2px solid #ecf0f1;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -200,6 +206,9 @@ if "response_url" not in st.session_state:
 
 if "field_version" not in st.session_state:
     st.session_state.field_version = 0
+
+if "is_paused" not in st.session_state:
+    st.session_state.is_paused = False
 
 
 # ============================================================================
@@ -273,8 +282,10 @@ def render_header():
         button_col1, button_col2 = st.columns(2)
         
         with button_col1:
-            if st.button("⏸️", key="pause_btn", help="Pause"):
-                pass
+            pause_icon = "▶️" if st.session_state.is_paused else "⏸️"
+            if st.button(pause_icon, key="pause_btn", help="Pause/Reprendre"):
+                st.session_state.is_paused = not st.session_state.is_paused
+                st.rerun()
         
         with button_col2:
             if st.button("❓", key="question_btn", help="Aide"):
@@ -287,7 +298,7 @@ def render_header():
 # Interface - Conversation
 # ============================================================================
 
-def render_conversation(field: Dict[str, Any]) -> None:
+def render_conversation(field: Dict[str, Any], is_paused: bool = False) -> None:
     """Affiche la conversation avec l'assistant."""
     
     # Question
@@ -308,9 +319,12 @@ def render_conversation(field: Dict[str, Any]) -> None:
         if example:
             bubble_content += f'<div class="message-example">Exemple : {example}</div>'
     
+    # Appliquer le grisage si en pause
+    paused_class = "paused-overlay" if is_paused else ""
+    
     # Afficher l'ensemble en une seule bulle
     st.markdown(f"""
-    <div class="conversation-container">
+    <div class="conversation-container {paused_class}">
         <div class="assistant-message">
             <div class="assistant-icon">🤖</div>
             <div class="message-content">
@@ -330,11 +344,17 @@ def render_conversation(field: Dict[str, Any]) -> None:
 def render_field(field: Dict[str, Any]) -> None:
     """Affiche le champ de formulaire selon son type."""
     
-    render_conversation(field)
+    render_conversation(field, st.session_state.is_paused)
     
-    st.markdown('<div class="input-section">', unsafe_allow_html=True)
+    # Appliquer le grisage si en pause
+    paused_class = "paused-overlay" if st.session_state.is_paused else ""
+    
+    st.markdown(f'<div class="input-section {paused_class}">', unsafe_allow_html=True)
     
     field_type = field.get("type", "text")
+    
+    # Désactiver les interactions si en pause
+    is_disabled = st.session_state.is_paused
     
     if field_type == "text":
         col1, col2 = st.columns([5, 1])
@@ -343,11 +363,12 @@ def render_field(field: Dict[str, Any]) -> None:
             user_input = st.text_input(
                 label="",
                 key=f"text_input_{st.session_state.field_version}",
-                label_visibility="collapsed"
+                label_visibility="collapsed",
+                disabled=is_disabled
             )
         
         with col2:
-            if st.button("➤", key=f"send_btn_{st.session_state.field_version}", use_container_width=True):
+            if st.button("➤", key=f"send_btn_{st.session_state.field_version}", use_container_width=True, disabled=is_disabled):
                 if user_input:
                     send_response(user_input)
                 else:
@@ -356,9 +377,10 @@ def render_field(field: Dict[str, Any]) -> None:
     elif field_type == "checkbox":
         user_input = st.checkbox(
             field.get("request", "Confirmez-vous ?"),
-            key=f"checkbox_input_{st.session_state.field_version}"
+            key=f"checkbox_input_{st.session_state.field_version}",
+            disabled=is_disabled
         )
-        if st.button("➤ Envoyer", key=f"send_btn_{st.session_state.field_version}", use_container_width=True):
+        if st.button("➤ Envoyer", key=f"send_btn_{st.session_state.field_version}", use_container_width=True, disabled=is_disabled):
             send_response(str(user_input))
     
     elif field_type == "dropdown":
@@ -367,9 +389,10 @@ def render_field(field: Dict[str, Any]) -> None:
             label="",
             options=values,
             key=f"dropdown_input_{st.session_state.field_version}",
-            label_visibility="collapsed"
+            label_visibility="collapsed",
+            disabled=is_disabled
         )
-        if st.button("➤ Envoyer", key=f"send_btn_{st.session_state.field_version}", use_container_width=True):
+        if st.button("➤ Envoyer", key=f"send_btn_{st.session_state.field_version}", use_container_width=True, disabled=is_disabled):
             send_response(user_input)
     
     else:
@@ -431,8 +454,9 @@ def main():
         render_field(st.session_state.current_field)
     else:
         # Écran d'attente - juste afficher une bulle vide
-        st.markdown("""
-        <div class="conversation-container">
+        paused_class = "paused-overlay" if st.session_state.is_paused else ""
+        st.markdown(f"""
+        <div class="conversation-container {paused_class}">
             <div class="assistant-message">
                 <div class="assistant-icon">🤖</div>
                 <div class="message-content">
