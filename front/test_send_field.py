@@ -75,8 +75,9 @@ def wait_for_response(timeout=60):
             try:
                 with open("last_response.json", "r") as f:
                     data = json.load(f)
-                    response = data.get("response")
-                    print(f"\n✅ Réponse reçue: '{response}'")
+                    response_value = data.get("response")
+                    print(f"\n✅ Réponse reçue:")
+                    print(f"   {json.dumps({'response': response_value}, indent=4)}")
                     return True
             except:
                 pass
