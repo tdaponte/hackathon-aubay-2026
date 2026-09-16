@@ -3,6 +3,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from playwright.async_api import async_playwright
 from fastapi.middleware.cors import CORSMiddleware
+from logging import Logger
 
 app = FastAPI(title="Browser Form Automation API")
 
@@ -52,9 +53,16 @@ async def extract_fields():
 
             page = context.pages[0]  # Grab the first active tab
 
-            # Query elements asynchronously
+            # # Query elements asynchronously
+            # interactive_elements = page.locator(
+            #     "input[type='text'], input[type='email'], input[type='checkbox'], input:not([type]), textarea, select"
+            # )
+
+            # Use the ultra-general locator string
             interactive_elements = page.locator(
-                "input[type='text'], input[type='email'], input[type='checkbox'], input:not([type]), textarea, select"
+                "input:not([type='hidden']):not([type='submit']):not([type='button']):not([type='image']):not([type='reset']), "
+                "textarea, "
+                "select"
             )
             count = await interactive_elements.count()
 
@@ -66,7 +74,16 @@ async def extract_fields():
                 input_type = await element.get_attribute("type")
 
                 tag_name = await element.evaluate("el => el.tagName.toLowerCase()")
-                field_type = "checkbox" if input_type == "checkbox" else tag_name
+
+                # Standardize our classification logic
+                if input_type == "checkbox":
+                    field_type = "checkbox"
+                elif input_type == "radio":
+                    field_type = "radio"
+                else:
+                    field_type = tag_name  # 'select', 'textarea', or 'input' defaults
+
+                # field_type = "checkbox" if input_type == "checkbox" else tag_name
 
                 if element_id:
                     label_element = page.locator(f"label[for='{element_id}']")
@@ -95,6 +112,9 @@ async def extract_fields():
                                 field_data["options"].append(opt_text.strip())
 
                     form_fields.append(field_data)
+
+                    print(f"Extracted data: {field_data}")
+
 
             return {"status": "success", "form_fields": form_fields}
 
