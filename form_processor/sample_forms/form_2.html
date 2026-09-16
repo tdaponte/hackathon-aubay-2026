@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprehensive Registration Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+        }
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+            border-bottom: 2px solid #eaeaea;
+            padding-bottom: 10px;
+        }
+        .form-section {
+            margin-bottom: 30px;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        .hint {
+            font-size: 0.85rem;
+            color: #777;
+            margin-bottom: 5px;
+        }
+        input[type="text"], input[type="email"], input[type="tel"], select, textarea {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        textarea {
+            resize: vertical;
+        }
+        .checkbox-group {
+            flex-direction: row;
+            align-items: center;
+            gap: 10px;
+        }
+        .checkbox-group input {
+            width: auto;
+        }
+        button {
+            background-color: #0056b3;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #004085;
+        }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <h1>Application Enrollment Form</h1>
+    <p>Please complete all sections of the form below. Ensure descriptions adhere to the stated character limits.</p>
+
+    <form action="#" method="POST">
+
+        <!-- Section 1: Personal Information -->
+        <div class="form-section">
+            <h2>1. Personal Information</h2>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="first-name">First Name</label>
+                    <input type="text" id="first-name" name="first-name" required maxlength="50">
+                </div>
+                <div class="form-group">
+                    <label for="last-name">Last Name</label>
+                    <input type="text" id="last-name" name="last-name" required maxlength="50">
+                </div>
+            </div>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" placeholder="123-456-7890">
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Professional Details -->
+        <div class="form-section">
+            <h2>2. Professional Details</h2>
+            <div class="form-group">
+                <label for="headline">Professional Headline</label>
+                <span class="hint">Maximum 100 characters</span>
+                <input type="text" id="headline" name="headline" maxlength="100" placeholder="e.g., Senior Software Engineer with 5 years experience">
+            </div>
+            <div class="form-group">
+                <label for="summary">Executive Summary</label>
+                <span class="hint">Maximum 500 characters</span>
+                <textarea id="summary" name="summary" rows="4" maxlength="500" placeholder="Briefly describe your career objectives and key achievements..."></textarea>
+            </div>
+        </div>
+
+        <!-- Section 3: Project Background -->
+        <div class="form-section">
+            <h2>3. Project Background</h2>
+            <div class="form-group">
+                <label for="project-title">Most Recent Project Title</label>
+                <span class="hint">Maximum 150 characters</span>
+                <input type="text" id="project-title" name="project-title" maxlength="150">
+            </div>
+            <div class="form-group">
+                <label for="project-desc">Detailed Project Description</label>
+                <span class="hint">Maximum 2000 characters</span>
+                <textarea id="project-desc" name="project-desc" rows="8" maxlength="2000" placeholder="Provide an in-depth breakdown of the project scope, methodologies, and outcomes..."></textarea>
+            </div>
+        </div>
+
+        <!-- Section 4: Preferences & Confirmation -->
+        <div class="form-section">
+            <h2>4. Preferences & Terms</h2>
+            <div class="form-group">
+                <label for="department">Preferred Department</label>
+                <select id="department" name="department">
+                    <option value="">Select an option...</option>
+                    <option value="eng">Engineering</option>
+                    <option value="mkt">Marketing</option>
+                    <option value="ops">Operations</option>
+                    <option value="hr">Human Resources</option>
+                </select>
+            </div>
+            <div class="form-group checkbox-group">
+                <input type="checkbox" id="terms" name="terms" required>
+                <label for="terms">I agree to the terms of service and privacy policy.</label>
+            </div>
+        </div>
+
+        <button type="submit">Submit Application</button>
+    </form>
+</div>
+
+</body>
+</html>

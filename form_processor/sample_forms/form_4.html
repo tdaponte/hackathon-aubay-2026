@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complex Multi-Column Registration Profile</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            margin: 0;
+            padding: 30px;
+            line-height: 1.5;
+        }
+        .form-wrapper {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        h1 {
+            font-size: 1.8rem;
+            color: #111;
+            margin-bottom: 5px;
+            border-bottom: 2px solid #0056b3;
+            padding-bottom: 10px;
+        }
+        .instructions {
+            font-size: 0.95rem;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        fieldset {
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 25px;
+            margin-bottom: 25px;
+            background-color: #fff;
+        }
+        legend {
+            font-weight: bold;
+            color: #0056b3;
+            padding: 0 10px;
+            font-size: 1.1rem;
+        }
+        /* Grid definitions for left-to-right processing */
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        .form-item {
+            display: flex;
+            flex-direction: column;
+        }
+        .span-full {
+            grid-column: 1 / -1;
+        }
+        label {
+            font-size: 0.88rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #495057;
+        }
+        .char-limit {
+            font-weight: normal;
+            color: #dc3545;
+            font-size: 0.78rem;
+            margin-left: 4px;
+        }
+        input[type="text"], input[type="email"], input[type="tel"], select, textarea {
+            padding: 10px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 0.92rem;
+            background-color: #fff;
+            color: #495057;
+            box-sizing: border-box;
+            width: 100%;
+            transition: border-color 0.15s ease-in-out;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #80bdff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+        textarea {
+            resize: vertical;
+        }
+        /* Custom styles for checkbox items */
+        .checkbox-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding-top: 5px;
+        }
+        .checkbox-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            color: #495057;
+        }
+        .checkbox-row input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+        .submit-section {
+            text-align: right;
+            margin-top: 20px;
+        }
+        button[type="submit"] {
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        button[type="submit"]:hover {
+            background-color: #004085;
+        }
+    </style>
+</head>
+<body>
+
+<div class="form-wrapper">
+    <h1>System Profile & Enrollment Form</h1>
+    <p class="instructions">Please complete the sections below from left to right, moving row by row. Ensure your inputs comply with the specified character thresholds.</p>
+
+    <form action="#" method="POST">
+
+        <!-- SECTION 1: IDENTITY & ACCREDITATION -->
+        <fieldset>
+            <legend>1. Identity & Accreditation</legend>
+            <div class="grid-4">
+                <div class="form-item">
+                    <label for="prefix">Honorific Prefix <span class="char-limit">(Max 10)</span></label>
+                    <input type="text" id="prefix" name="prefix" maxlength="10" placeholder="e.g., Dr.">
+                </div>
+                <div class="form-item">
+                    <label for="first-name">Given Name <span class="char-limit">(Max 40)</span></label>
+                    <input type="text" id="first-name" name="first-name" maxlength="40" placeholder="e.g., Jane" required>
+                </div>
+                <div class="form-item">
+                    <label for="middle-name">Middle Initial <span class="char-limit">(Max 5)</span></label>
+                    <input type="text" id="middle-name" name="middle-name" maxlength="5" placeholder="e.g., A.">
+                </div>
+                <div class="form-item">
+                    <label for="last-name">Family Surname <span class="char-limit">(Max 50)</span></label>
+                    <input type="text" id="last-name" name="last-name" maxlength="50" placeholder="e.g., Smith" required>
+                </div>
+            </div>
+        </fieldset>
+
+        <!-- SECTION 2: CONTACT GRID & LOCATION STRUCTURE -->
+        <fieldset>
+            <legend>2. Contact Routing & Core Logistics</legend>
+
+            <!-- Row 1: Emails & Primary Contact -->
+            <div class="grid-3" style="margin-bottom: 20px;">
+                <div class="form-item">
+                    <label for="primary-email">Primary Business Email <span class="char-limit">(Max 60)</span></label>
+                    <input type="email" id="primary-email" name="primary-email" maxlength="60" placeholder="e.g., j.smith@enterprise.com" required>
+                </div>
+                <div class="form-item">
+                    <label for="alt-email">Secondary Routing Email <span class="char-limit">(Max 60)</span></label>
+                    <input type="email" id="alt-email" name="alt-email" maxlength="60" placeholder="e.g., backup.jane@gmail.com">
+                </div>
+                <div class="form-item">
+                    <label for="primary-phone">Mobile Contact Line <span class="char-limit">(Max 20)</span></label>
+                    <input type="tel" id="primary-phone" name="primary-phone" maxlength="20" placeholder="e.g., +1-555-0198" required>
+                </div>
+            </div>
+
+            <!-- Row 2: Mailing Address Information & Country Selection Dropdown -->
+            <div class="grid-4">
+                <div class="form-item span-full">
+                    <label for="street-address">Street Address Logistics <span class="char-limit">(Max 120)</span></label>
+                    <input type="text" id="street-address" name="street-address" maxlength="120" placeholder="e.g., 742 Evergreen Terrace, Suite 10B" required>
+                </div>
+                <div class="form-item">
+                    <label for="city-node">Municipality / City <span class="char-limit">(Max 40)</span></label>
+                    <input type="text" id="city-node" name="city-node" maxlength="40" placeholder="e.g., Springfield" required>
+                </div>
+                <div class="form-item">
+                    <label for="state-region">State / Province / Region <span class="char-limit">(Max 30)</span></label>
+                    <input type="text" id="state-region" name="state-region" maxlength="30" placeholder="e.g., Illinois" required>
+                </div>
+                <div class="form-item">
+                    <label for="postal-code">Postal Routing Index <span class="char-limit">(Max 12)</span></label>
+                    <input type="text" id="postal-code" name="postal-code" maxlength="12" placeholder="e.g., 62704-1234" required>
+                </div>
+                <div class="form-item">
+                    <label for="country-dropdown">Global Country Assignment <span class="char-limit">(Select 1 Option)</span></label>
+                    <select id="country-dropdown" name="country-dropdown" required>
+                        <option value="" disabled selected>e.g., Select United States...</option>
+                        <option value="US">United States</option>
+                        <option value="CA">Canada</option>
+                        <option value="GB">United Kingdom</option>
+                        <option value="AU">Australia</option>
+                        <option value="FR">France</option>
+                    </select>
+                </div>
+            </div>
+        </fieldset>
+
+        <!-- SECTION 3: ORGANIZATIONAL METRICS, DROPDOWNS, & CHECKBOXES -->
+        <fieldset>
+            <legend>3. Professional Classification & Credentials</legend>
+
+            <!-- Row 1: Profile Text Boxes & Org Dropdown -->
+            <div class="grid-3" style="margin-bottom: 20px;">
+                <div class="form-item">
+                    <label for="job-title">Official Corporate Assignment <span class="char-limit">(Max 60)</span></label>
+                    <input type="text" id="job-title" name="job-title" maxlength="60" placeholder="e.g., Principal Cloud Infrastructure Architect" required>
+                </div>
+                <div class="form-item">
+                    <label for="department-dropdown">Internal Cost Center Node <span class="char-limit">(Select 1 Option)</span></label>
+                    <select id="department-dropdown" name="department-dropdown" required>
+                        <option value="Standard">Standard</option>
+                        <option value="Advanced">Advanced</option>
+                    </select>
