@@ -68,6 +68,8 @@ async def extract_fields():
 
             form_fields = []
 
+            # print(f"Extracted elements: {interactive_elements}")
+
             for i in range(count):
                 element = interactive_elements.nth(i)
                 element_id = await element.get_attribute("id")
@@ -96,11 +98,57 @@ async def extract_fields():
                         else:
                             label_text = f"Unnamed field ({element_id})"
 
+                    # 3. Extract Placeholder
+                    placeholder = await element.get_attribute("placeholder") or ""
+
+                    # 4. Extract Max Character Limit (maxlength attribute)
+                    max_length = await element.get_attribute("maxlength")
+                    # If maxlength doesn't exist, we save it as None (null in JSON)
+                    max_length = int(max_length) if max_length else 0
+
+                    # 5. Extract Descriptions / Helper Text
+                    description_text = ""
+
+                    # Strategy A: Check accessibility tag (aria-describedby)
+                    aria_desc_id = await element.get_attribute("aria-describedby")
+                    if aria_desc_id:
+                        desc_element = page.locator(f"#{aria_desc_id}")
+                        if await desc_element.count() > 0:
+                            description_text = await desc_element.inner_text()
+
+                    # Strategy B: Fallback to reading nearby helper structural siblings (e.g. .help-block, .description, or small text)
+                    if not description_text.strip():
+                        # We target sibling text blocks or parents that commonly wrap instructions
+                        sibling_desc = page.locator(
+                            f"#{element_id} ~ .description, #{element_id} ~ .help-text, #{element_id} ~ small")
+                        if await sibling_desc.count() > 0:
+                            description_text = await sibling_desc.first.inner_text()
+
+                    # field_data = {
+                    #     "id": element_id,
+                    #     "label": label_text.strip(),
+                    #     "type": field_type,
+                    #     "options": []
+                    # }
+
+                    match field_type:
+                        case "input" | "textarea":
+                            return_type = "text"
+                        case "select":
+                            return_type = field_type
+                        case "checkbox":
+                            return_type = "check"
+                        case _:
+                            return_type = ""
+
                     field_data = {
-                        "id": element_id,
                         "label": label_text.strip(),
-                        "type": field_type,
-                        "options": []
+                        "type": return_type,
+                        "values": [],
+                        "description": description_text,
+                        "placeholder": placeholder,
+                        "max_chars": max_length,
+                        "optional": "false"
                     }
 
                     if field_type == "select":
@@ -109,7 +157,7 @@ async def extract_fields():
                         for j in range(opt_count):
                             opt_text = await options_locator.nth(j).inner_text()
                             if opt_text.strip():
-                                field_data["options"].append(opt_text.strip())
+                                field_data["values"].append(opt_text.strip())
 
                     form_fields.append(field_data)
 
@@ -124,6 +172,49 @@ async def extract_fields():
             # Raise an explicit HTTP 500 so FastAPI safely preserves CORS headers
             raise HTTPException(status_code=500, detail=str(e))
 
+
+# =====================================================================
+# ENDPOINT 2: AUTOMATE INJECTION FROM INBOUND API PAYLOAD
+# =====================================================================
+@app.post("/fill")
+async def fill_fields(payload: FormSubmission):
+    """
+    Accepts arbitrary mapping inputs and dynamically drives your open
+    browser window tab to execute user selection actions natively.
+    """
+    async with async_playwright() as p:
+        try:
+            browser = await p.chromium.connect_over_cdp(CHROME_CDP_URL)
+            page = browser.contexts[0].pages[0]
+
+            for element_id, configuration in payload.responses.items():
+                value, field_type = configuration[0], configuration[1]
+                selector = f"#{element_id}"
+
+                if field_type == "checkbox":
+                    await page.set_checked(selector, bool(value))
+
+                elif field_type == "select":
+                    try:
+                        # Attempt explicit visual text label string binding first
+                        await page.select_option(selector, label=str(value))
+                    except Exception:
+                        # Fallback to index value tags
+                        await page.select_option(selector, value=str(value))
+                else:
+                    await page.fill(selector, str(value))
+
+            return {"status": "success", "message": "Form fields injected successfully."}
+
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Failed to automate form: {str(e)}")
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    # Bootstraps the local app runtime
+    uvicorn.run(app, host="127.0.0.1", port=8000)
 
 
 
@@ -195,47 +286,3 @@ async def extract_fields():
 #
 #         except Exception as e:
 #             raise HTTPException(status_code=500, detail=f"Failed to scrape browser session: {str(e)}")
-
-
-# =====================================================================
-# ENDPOINT 2: AUTOMATE INJECTION FROM INBOUND API PAYLOAD
-# =====================================================================
-@app.post("/fill")
-async def fill_fields(payload: FormSubmission):
-    """
-    Accepts arbitrary mapping inputs and dynamically drives your open
-    browser window tab to execute user selection actions natively.
-    """
-    async with async_playwright() as p:
-        try:
-            browser = await p.chromium.connect_over_cdp(CHROME_CDP_URL)
-            page = browser.contexts[0].pages[0]
-
-            for element_id, configuration in payload.responses.items():
-                value, field_type = configuration[0], configuration[1]
-                selector = f"#{element_id}"
-
-                if field_type == "checkbox":
-                    await page.set_checked(selector, bool(value))
-
-                elif field_type == "select":
-                    try:
-                        # Attempt explicit visual text label string binding first
-                        await page.select_option(selector, label=str(value))
-                    except Exception:
-                        # Fallback to index value tags
-                        await page.select_option(selector, value=str(value))
-                else:
-                    await page.fill(selector, str(value))
-
-            return {"status": "success", "message": "Form fields injected successfully."}
-
-        except Exception as e:
-            raise HTTPException(status_code=500, detail=f"Failed to automate form: {str(e)}")
-
-
-if __name__ == "__main__":
-    import uvicorn
-
-    # Bootstraps the local app runtime
-    uvicorn.run(app, host="127.0.0.1", port=8000)
