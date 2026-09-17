@@ -1,1 +1,1 @@
-{"field": {"type": "textarea", "request": "D\u00e9cris-toi en 30 mots", "values": [], "example": "30 mots", "optional": false}, "response_url": "http://localhost:8502/mock_response", "version": 24}
+{"field": {"type": "select", "request": "Quel est le select ?", "values": ["nnn", "jjj", "lll"], "example": "Emple :)", "optional": false}, "response_url": "http://localhost:8502/mock_response", "version": 30}

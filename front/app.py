@@ -110,6 +110,30 @@ st.markdown("""
         font-size: 26px;
     }
 
+    .loading-bubble {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #edf3ff 0%, #dfeaff 100%);
+        box-shadow: 0 4px 12px rgba(77, 122, 232, 0.12);
+    }
+
+    .loading-spinner {
+        width: 22px;
+        height: 22px;
+        border: 3px solid rgba(77, 122, 232, 0.15);
+        border-top-color: #4d7ae8;
+        border-radius: 50%;
+        animation: spin 0.9s linear infinite;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
     [data-testid="stBaseButton-secondary"],
     [data-testid="stBaseButton-primary"],
     .stButton > button {
@@ -548,7 +572,22 @@ def send_response(response: Any) -> None:
     if not st.session_state.response_url:
         st.error("Erreur: pas d'URL de réponse définie")
         return
-    
+
+    widget_prefixes = (
+        "text_input_",
+        "textarea_input_",
+        "proposal_input_",
+        "select_value_",
+        "select_other_",
+        "chip_",
+        "checkbox_input_",
+        "dropdown_input_",
+    )
+    for key in list(st.session_state.keys()):
+        if any(key.startswith(prefix) for prefix in widget_prefixes):
+            del st.session_state[key]
+    st.session_state.current_field = None
+
     try:
         print(f"\n📤 Envoi de la réponse: {response}")
         
@@ -562,21 +601,6 @@ def send_response(response: Any) -> None:
         
         if response_obj.status_code == 200:
             print(f"✅ Réponse envoyée au serveur")
-
-            field_version_key = f"select_value_{st.session_state.field_version}"
-            if field_version_key in st.session_state:
-                del st.session_state[field_version_key]
-
-            other_key = f"select_other_{st.session_state.field_version}"
-            if other_key in st.session_state:
-                del st.session_state[other_key]
-
-            for key in list(st.session_state.keys()):
-                if key.startswith(f"chip_{st.session_state.field_version}_"):
-                    del st.session_state[key]
-
-            st.session_state.current_field = None
-
             time.sleep(1)
             st.rerun()
         else:
@@ -601,13 +625,14 @@ def main():
     if st.session_state.current_field:
         render_field(st.session_state.current_field)
     else:
-        # Quand il n'y a rien à afficher, on garde seulement le robot avec son cadre vide.
+        # Quand il n'y a rien à afficher, on garde seulement le robot + un spinner de chargement.
         st.markdown("""
         <div class="conversation-container">
             <div class="assistant-message">
                 <div class="assistant-icon">🤖</div>
                 <div class="message-content">
-                    <div class="message-bubble" style="visibility: hidden; min-height: 0; padding: 0; margin: 0; background: transparent; box-shadow: none; border: none;">
+                    <div class="loading-bubble">
+                        <div class="loading-spinner"></div>
                     </div>
                 </div>
             </div>
