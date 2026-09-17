@@ -1,1 +1,1 @@
-{"field": {"type": "text", "request": "Quel est ton pr\u00e9nom ?", "values": [], "example": "Louis", "optional": true}, "response_url": "http://localhost:8502/mock_response", "version": 18}
+{"field": {"type": "select", "request": "Question", "values": ["haha", "hoho", "hihi"], "example": "Exemple", "optional": false}, "response_url": "http://localhost:8502/mock_response", "version": 19}

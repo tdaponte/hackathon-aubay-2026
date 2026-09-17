@@ -61,6 +61,7 @@ st.markdown("""
     .title-section {
         flex: 1;
         text-align: center;
+        width: 100%;
     }
     
     .title-section h1 {
@@ -99,14 +100,36 @@ st.markdown("""
     
     .assistant-icon {
         flex-shrink: 0;
-        width: 50px;
-        height: 50px;
+        width: 56px;
+        height: 56px;
         background: linear-gradient(135deg, #a8d5ff 0%, #7fa6d1 100%);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 24px;
+        font-size: 26px;
+    }
+
+    [data-testid="stBaseButton-secondary"],
+    [data-testid="stBaseButton-primary"],
+    .stButton > button {
+        font-size: 34px !important;
+        min-width: 70px !important;
+        min-height: 70px !important;
+        width: 70px !important;
+        height: 70px !important;
+        padding: 0 !important;
+        border-radius: 14px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        line-height: 1 !important;
+    }
+
+    div[data-testid="stImage"] img {
+        max-width: 150px !important;
+        width: 150px !important;
+        height: auto !important;
     }
     
     .message-content {
@@ -188,18 +211,20 @@ st.markdown("""
     
    .chip-list {
        display: flex;
+       flex-direction: row;
        flex-wrap: nowrap;
-       gap: 10px;
+       gap: 6px;
        margin-bottom: 16px;
        overflow-x: auto;
        padding-bottom: 4px;
+       align-items: center;
    }
 
    .chip-button {
        display: inline-flex;
        align-items: center;
        justify-content: center;
-       padding: 10px 16px;
+       padding: 7px 12px;
        border-radius: 999px;
        border: 1px solid #dfe7f5;
        background: #f5f7ff;
@@ -208,13 +233,14 @@ st.markdown("""
        cursor: pointer;
        transition: all 0.2s ease;
        white-space: nowrap;
+       font-size: 14px;
+       min-height: 28px;
    }
 
    .chip-button.selected {
        background: linear-gradient(135deg, #7aa8ff 0%, #4d7ae8 100%);
        color: white;
        border-color: #4d7ae8;
-       box-shadow: 0 4px 12px rgba(77, 122, 232, 0.3);
    }
 
    .chip-button:disabled {
@@ -302,12 +328,12 @@ def get_logo():
 def render_header():
     """Affiche le header avec logo et boutons."""
     
-    col1, col2, col3 = st.columns([1, 3, 1])
+    col1, col2, col3 = st.columns([1, 4, 1])
     
     with col1:
         logo = get_logo()
         if logo:
-            st.image(logo, width=80)
+            st.image(logo, width=150)
     
     with col2:
         st.markdown("""
@@ -317,18 +343,12 @@ def render_header():
         """, unsafe_allow_html=True)
     
     with col3:
-        # Boutons pause et question
-        button_col1, button_col2 = st.columns(2)
-        
-        with button_col1:
-            pause_icon = "▶️" if st.session_state.is_paused else "⏸️"
-            if st.button(pause_icon, key="pause_btn", help="Pause/Reprendre"):
-                st.session_state.is_paused = not st.session_state.is_paused
-                st.rerun()
-        
-        with button_col2:
-            if st.button("❓", key="question_btn", help="Aide"):
-                pass
+        st.markdown('<div style="display:flex; justify-content:flex-end; width:100%;">', unsafe_allow_html=True)
+        # Boutons pause
+        if st.button("▶️" if st.session_state.is_paused else "⏸️", key="pause_btn", help="Pause/Reprendre"):
+            st.session_state.is_paused = not st.session_state.is_paused
+            st.rerun()
+        st.markdown('</div>', unsafe_allow_html=True)
     
     st.divider()
 
@@ -463,43 +483,48 @@ def render_field(field: Dict[str, Any]) -> None:
         st.session_state.setdefault(other_key, "")
 
         if values:
-            st.markdown('<div class="chip-list">', unsafe_allow_html=True)
-            for value in values:
+            cols = st.columns(len(values))
+            for col, value in zip(cols, values):
                 is_selected = st.session_state.get(selected_key, "") == value
                 label = f"✓ {value}" if is_selected else value
-                if st.button(
-                    label,
-                    key=f"chip_{st.session_state.field_version}_{value}",
-                    use_container_width=False,
-                    disabled=is_disabled,
-                ):
-                    if is_selected:
-                        st.session_state[selected_key] = ""
-                        st.session_state[other_key] = ""
-                    else:
-                        st.session_state[selected_key] = value
-                        st.session_state[other_key] = value
-                    st.rerun()
-            st.markdown('</div>', unsafe_allow_html=True)
+                with col:
+                    if st.button(
+                        label,
+                        key=f"chip_{st.session_state.field_version}_{value}",
+                        use_container_width=True,
+                        disabled=is_disabled,
+                    ):
+                        if is_selected:
+                            st.session_state[selected_key] = ""
+                            st.session_state[other_key] = ""
+                        else:
+                            st.session_state[selected_key] = value
+                            st.session_state[other_key] = value
+                        st.rerun()
 
-        other_value = st.text_input(
-            "Ou tu peux marquer autre chose...",
-            key=other_key,
-            help="Saisis une autre réponse si besoin",
-            disabled=is_disabled,
-            placeholder="Ou tu peux marquer autre chose...",
-        )
+        col_input, col_button = st.columns([5, 1])
 
-        if st.button("➤ Envoyer", key=f"send_btn_{st.session_state.field_version}", use_container_width=True, disabled=is_disabled):
-            selected_value = st.session_state.get(selected_key, "")
-            if other_value.strip():
-                final_value = other_value.strip()
-            elif selected_value:
-                final_value = selected_value
-            else:
-                st.warning("Choisis une valeur ou écris une autre réponse")
-                return
-            send_response(final_value)
+        with col_input:
+            other_value = st.text_input(
+                label="",
+                key=other_key,
+                help="Saisis une autre réponse si besoin",
+                disabled=is_disabled,
+                label_visibility="collapsed",
+                placeholder="",
+            )
+
+        with col_button:
+            if st.button("➤", key=f"send_btn_{st.session_state.field_version}", use_container_width=True, disabled=is_disabled):
+                selected_value = st.session_state.get(selected_key, "")
+                if other_value.strip():
+                    final_value = other_value.strip()
+                elif selected_value:
+                    final_value = selected_value
+                else:
+                    st.warning("Choisis une valeur ou écris une autre réponse")
+                    return
+                send_response(final_value)
     
     else:
         st.error(f"Type de champ non supporté: {field_type}")
