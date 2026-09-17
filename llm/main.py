@@ -19,7 +19,6 @@ class FormConversationState:
         self.fields = {
             f["id"]: f
             for f in form_fields
-            if str(f.get("optional", "false")).lower() != "true"
         }
         self.answers = {}
 
@@ -164,8 +163,6 @@ def collect_and_fill_form(llm, ask_user_fn) -> dict:
 
     final_answers = state.answers
 
-    # Construction du payload attendu par l'API :
-    # { "responses": { <id>: [(value, type)], ... } }
     responses_payload = {
         field_id: [value, state.fields[field_id]["type"]]
         for field_id, value in final_answers.items()
