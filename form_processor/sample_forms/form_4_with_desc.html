@@ -171,6 +171,26 @@
                     <input type="text" id="familyName" name="familyName" maxlength="50" placeholder="e.g., Smith" aria-describedby="familyNameHelp">
                     <small id="familyNameHelp" class="help-text">Your formal parental ancestral family lineage name.</small>
                 </div>
+
+                <div class="form-group">
+                    <label for="shortBio">Professional summary <span class="char-limit">(Max 500 characters)</span></label>
+                    <textarea id="shortBio" name="shortBio" rows="3" maxlength="500" placeholder="My core expertise revolves around ..." aria-describedby="shortBioHelp"></textarea>
+                    <small id="shortBioHelp" class="help-text">Provide a succinct summary of your recent professional achievements and expertise relevant to the enrollment process.</small>
+                </div>
+
+                <div class="form-item">
+                    <label for="countryOrigin">Global Country Assignment</label>
+                    <select id="countryOrigin" name="countryOrigin" aria-describedby="countryOriginHelp">
+                        <option value="">Select ...</option>
+                        <option value="US">United States</option>
+                        <option value="CA">Canada</option>
+                        <option value="UK">United Kingdom</option>
+                        <option value="AU">Australia</option>
+                        <option value="FR">France</option>
+                        <option value="FR">China</option>
+                    </select>
+                    <small id="countryOriginHelp" class="help-text">Your country of origin.</small>
+                </div>
             </div>
         </fieldset>
 
