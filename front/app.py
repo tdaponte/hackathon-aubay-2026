@@ -609,21 +609,6 @@ def main():
         </div>
         """, unsafe_allow_html=True)
     
-    # Debug - Afficher le format du webhook en bas
-    st.markdown('<div class="debug-section">', unsafe_allow_html=True)
-    with st.expander("📝 Format du webhook (debug)"):
-        st.code("""{
-    "field": {
-        "request": "Est-ce que tu peux te présenter ?",
-        "type": "text",
-        "values": [],
-        "example": "Je m'appelle...",
-        "optional": false
-    },
-    "response_url": "http://localhost:8502/mock_response"
-}""", language="json")
-    st.markdown('</div>', unsafe_allow_html=True)
-    
     # Auto-refresh
     time.sleep(0.5)
     st.rerun()
