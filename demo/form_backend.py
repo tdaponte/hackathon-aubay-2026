@@ -30,6 +30,9 @@ class FormConversationState:
             for f in form_fields
         }
         self.answers = {}
+        # Réponses de l'utilisateur qui n'ont pas permis d'extraire une
+        # valeur exploitable, par champ (id -> liste de réponses brutes).
+        self.failed_attempts: dict[str, list[str]] = {}
 
     @property
     def missing_fields(self) -> dict:
@@ -43,6 +46,11 @@ class FormConversationState:
 
     def set_answer(self, field_id: str, value) -> None:
         self.answers[field_id] = value
+        self.failed_attempts.pop(field_id, None)
+
+    def add_failed_attempt(self, field_id: str, reply: str) -> None:
+        """Enregistre une réponse utilisateur jugée non exploitable pour ce champ."""
+        self.failed_attempts.setdefault(field_id, []).append(reply)
 
 
 def _describe_constraints(field_info: dict) -> str:
@@ -115,6 +123,38 @@ def generate_next_question(llm, state: FormConversationState) -> str:
     elif placeholder:
         extra = f"Exemple de réponse attendue : {placeholder}"
 
+    previous_replies = state.failed_attempts.get(field_id, [])
+
+    if previous_replies:
+        # La dernière réponse de l'utilisateur n'a pas permis d'extraire de
+        # valeur exploitable : on reformule la question différemment plutôt
+        # que de la reposer à l'identique.
+        last_reply = previous_replies[-1]
+
+        prompt = ChatPromptTemplate.from_messages([
+            ("system",
+             "Tu aides un utilisateur à remplir un formulaire, un champ à la "
+             "fois. Sa dernière réponse n'a pas permis d'obtenir une valeur "
+             "exploitable pour le champ '{label}'.\n"
+             "Reformule la question de façon DIFFÉRENTE et plus claire que "
+             "la question précédente (ne la répète pas mot pour mot)"
+             "Nom du champ : {label}\n"
+             "Description : {description}\n"
+             "{extra}\n"
+             "Réponse précédente de l'utilisateur, qui n'a pas pu être "
+             "utilisée : \"{last_reply}\"\n\n"
+             "Réponds uniquement avec la nouvelle question reformulée, sans "
+             "préambule."),
+        ])
+
+        chain = prompt | llm | StrOutputParser()
+        return chain.invoke({
+            "label": label,
+            "description": description,
+            "extra": extra,
+            "last_reply": last_reply,
+        })
+
     prompt = ChatPromptTemplate.from_messages([
         ("system",
          "Tu aides un utilisateur à remplir un formulaire, un champ à la "
@@ -168,7 +208,8 @@ def collect_and_fill_form(llm, ask_user_fn) -> dict:
 
         if value is None:
             print(f"La valeur de '{label}' n'est pas cohérente, "
-                  f"la question sera reposée.")
+                  f"la question sera reformulée.")
+            state.add_failed_attempt(field_id, user_reply)
             continue  # on ne marque PAS le champ comme répondu -> reposé
 
         state.set_answer(field_id, value)

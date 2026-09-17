@@ -1,10 +1,10 @@
 {
   "field": {
-    "request": "\n\nQuel est votre prénom ?",
+    "request": "\n\nQuelle est votre adresse e-mail professionnelle principale ?",
     "type": "text",
     "values": [],
-    "example": "e.g., Alex",
+    "example": "name@company.com",
     "optional": true
   },
-  "version": 2
+  "version": 10
 }

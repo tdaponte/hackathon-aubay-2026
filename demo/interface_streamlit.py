@@ -192,52 +192,7 @@ st.markdown("""
        filter: grayscale(100%) brightness(0.9);
        pointer-events: none;
     }
-    
-   .chip-list {
-       display: flex;
-       flex-wrap: nowrap;
-       gap: 10px;
-       margin-bottom: 16px;
-       overflow-x: auto;
-       padding-bottom: 4px;
-   }
 
-   .chip-button {
-       display: inline-flex;
-       align-items: center;
-       justify-content: center;
-       padding: 10px 16px;
-       border-radius: 999px;
-       border: 1px solid #dfe7f5;
-       background: #f5f7ff;
-       color: #2d3a5f;
-       font-weight: 600;
-       cursor: pointer;
-       transition: all 0.2s ease;
-       white-space: nowrap;
-   }
-
-   .chip-button.selected {
-       background: linear-gradient(135deg, #7aa8ff 0%, #4d7ae8 100%);
-       color: white;
-       border-color: #4d7ae8;
-       box-shadow: 0 4px 12px rgba(77, 122, 232, 0.3);
-   }
-
-   .chip-button:disabled {
-       opacity: 0.5;
-       cursor: not-allowed;
-   }
-
-   .select-other {
-       margin-top: 10px;
-   }
-
-   .debug-section {
-       margin-top: 50px;
-       padding-top: 30px;
-       border-top: 2px solid #ecf0f1;
-   }
 </style>
 """, unsafe_allow_html=True)
 
@@ -331,8 +286,6 @@ def render_header():
         with button_col2:
             if st.button("❓", key="question_btn", help="Aide"):
                 pass
-    
-    st.divider()
 
 
 # ============================================================================
@@ -354,10 +307,7 @@ def render_conversation(field: Dict[str, Any], is_paused: bool = False) -> None:
     if field.get("type") == "proposal":
         bubble_content += '<div class="message-question">Le texte est trop long. Voici une version raccourcie :</div>'
     elif request:
-        if optional:
-            bubble_content += f'<div class="message-question">{request} <span class="optional-badge">Optionnel</span></div>'
-        else:
-            bubble_content += f'<div class="message-question">{request}</div>'
+        bubble_content += f'<div class="message-question">{request}</div>'
         
         if example:
             bubble_content += f'<div class="message-example">Exemple : {example}</div>'
@@ -472,55 +422,33 @@ def render_field(field: Dict[str, Any]) -> None:
     elif field_type in ("dropdown", "select"):
         values = field.get("values", [])
         selected_key = f"select_value_{st.session_state.field_version}"
-        other_key = f"select_other_{st.session_state.field_version}"
 
         st.session_state.setdefault(selected_key, "")
-        st.session_state.setdefault(other_key, "")
 
-        # Les chips restent hors formulaire : st.button n'est pas autorisé
-        # à l'intérieur d'un st.form (seul form_submit_button l'est).
         if values:
-            st.markdown('<div class="chip-list">', unsafe_allow_html=True)
-            for value in values:
-                is_selected = st.session_state.get(selected_key, "") == value
-                label = f"✓ {value}" if is_selected else value
-                if st.button(
-                    label,
-                    key=f"chip_{st.session_state.field_version}_{value}",
-                    use_container_width=False,
-                    disabled=is_disabled,
-                ):
-                    if is_selected:
-                        st.session_state[selected_key] = ""
-                        st.session_state[other_key] = ""
-                    else:
-                        st.session_state[selected_key] = value
-                        st.session_state[other_key] = value
-                    st.rerun()
-            st.markdown('</div>', unsafe_allow_html=True)
+            chips_per_row = 3
+            for i in range(0, len(values), chips_per_row):
+                row_values = values[i:i + chips_per_row]
+                cols = st.columns(len(row_values))
+                for col, value in zip(cols, row_values):
+                    with col:
+                        is_selected = st.session_state.get(selected_key, "") == value
+                        label = f"✓ {value}" if is_selected else value
+                        if st.button(
+                            label,
+                            key=f"chip_{st.session_state.field_version}_{value}",
+                            use_container_width=True,
+                            disabled=is_disabled,
+                        ):
+                            st.session_state[selected_key] = "" if is_selected else value
+                            st.rerun()
 
-        # Le champ "autre" et le bouton d'envoi sont dans un formulaire :
-        # Entrée dans ce champ envoie directement la réponse.
-        with st.form(key=f"form_{st.session_state.field_version}"):
-            other_value = st.text_input(
-                "Ou tu peux marquer autre chose...",
-                key=other_key,
-                help="Saisis une autre réponse si besoin",
-                disabled=is_disabled,
-                placeholder="Ou tu peux marquer autre chose...",
-            )
-            submitted = st.form_submit_button("➤ Envoyer", use_container_width=True, disabled=is_disabled)
-
-        if submitted:
+        if st.button("➤ Envoyer", key=f"send_btn_{st.session_state.field_version}", use_container_width=True, disabled=is_disabled):
             selected_value = st.session_state.get(selected_key, "")
-            if other_value.strip():
-                final_value = other_value.strip()
-            elif selected_value:
-                final_value = selected_value
+            if selected_value:
+                send_response(selected_value)
             else:
-                st.warning("Choisis une valeur ou écris une autre réponse")
-                return
-            send_response(final_value)
+                st.warning("Choisis une valeur")
     
     else:
         st.error(f"Type de champ non supporté: {field_type}")
@@ -555,10 +483,6 @@ def send_response(response: Any) -> None:
         field_version_key = f"select_value_{st.session_state.field_version}"
         if field_version_key in st.session_state:
             del st.session_state[field_version_key]
-
-        other_key = f"select_other_{st.session_state.field_version}"
-        if other_key in st.session_state:
-            del st.session_state[other_key]
 
         for key in list(st.session_state.keys()):
             if key.startswith(f"chip_{st.session_state.field_version}_"):
@@ -600,28 +524,6 @@ def main():
             </div>
         </div>
         """, unsafe_allow_html=True)
-    
-    # Debug - Afficher le format des fichiers en bas
-    st.markdown('<div class="debug-section">', unsafe_allow_html=True)
-    with st.expander("📝 Format des fichiers d'échange (debug)"):
-        st.code("""# current_field.json (écrit par le back-end)
-{
-    "field": {
-        "request": "Est-ce que tu peux te présenter ?",
-        "type": "text",
-        "values": [],
-        "example": "Je m'appelle...",
-        "optional": false
-    },
-    "version": 3
-}
-
-# current_response.json (écrit par ce front)
-{
-    "response": "Je m'appelle Alice",
-    "version": 3
-}""", language="json")
-    st.markdown('</div>', unsafe_allow_html=True)
     
     # Auto-refresh
     time.sleep(0.5)
