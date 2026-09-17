@@ -434,6 +434,12 @@ def render_field(field: Dict[str, Any]) -> None:
                 st.warning("Veuillez entrer une réponse")
         return
 
+    # Nettoyer les anciens états de select si on repasse sur un autre type.
+    for key in list(st.session_state.keys()):
+        if key.startswith("select_value_") or key.startswith("select_other_") or key.startswith("chip_"):
+            if key not in [f"select_value_{st.session_state.field_version}", f"select_other_{st.session_state.field_version}"]:
+                del st.session_state[key]
+
     if field_type == "text":
         col1, col2 = st.columns([5, 1])
         
@@ -555,7 +561,6 @@ def send_response(response: Any) -> None:
         )
         
         if response_obj.status_code == 200:
-            st.success("✓ Réponse envoyée !")
             print(f"✅ Réponse envoyée au serveur")
 
             field_version_key = f"select_value_{st.session_state.field_version}"
