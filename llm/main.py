@@ -159,23 +159,18 @@ def collect_and_fill_form(llm, ask_user_fn) -> dict:
 
         state.set_answer(field_id, value)
 
-    assert state.is_complete
-
-    final_answers = state.answers
-
-    responses_payload = {
+        responses_payload = {
         field_id: [value, state.fields[field_id]["type"]]
-        for field_id, value in final_answers.items()
-    }
+        for field_id, value in state.answers.items()
+        }
 
-    fill_response = requests.post(
-        "http://127.0.0.1:8000/fill",
-        json={"responses": responses_payload},
-    )
-    fill_response.raise_for_status()
-    print(f"réponse du fill: {fill_response.json()}")
+        fill_response = requests.post(
+            "http://127.0.0.1:8000/fill",
+            json={"responses": responses_payload},
+        )
+        fill_response.raise_for_status()
 
-    return final_answers
+    return state.answers
 
 def get_session_history(session_id):
     if session_id not in history:
