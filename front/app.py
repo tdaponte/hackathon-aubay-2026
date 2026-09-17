@@ -484,14 +484,13 @@ def main():
     if st.session_state.current_field:
         render_field(st.session_state.current_field)
     else:
-        # Écran d'attente - juste afficher une bulle vide
-        paused_class = "paused-overlay" if st.session_state.is_paused else ""
-        st.markdown(f"""
-        <div class="conversation-container {paused_class}">
+        # Quand il n'y a rien à afficher, on garde seulement le robot avec son cadre vide.
+        st.markdown("""
+        <div class="conversation-container">
             <div class="assistant-message">
                 <div class="assistant-icon">🤖</div>
                 <div class="message-content">
-                    <div class="message-bubble">
+                    <div class="message-bubble" style="visibility: hidden; min-height: 0; padding: 0; margin: 0; background: transparent; box-shadow: none; border: none;">
                     </div>
                 </div>
             </div>
