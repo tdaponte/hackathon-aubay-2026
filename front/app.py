@@ -186,11 +186,51 @@ st.markdown("""
        pointer-events: none;
     }
     
-    .debug-section {
+   .chip-list {
+       display: flex;
+       flex-wrap: nowrap;
+       gap: 10px;
+       margin-bottom: 16px;
+       overflow-x: auto;
+       padding-bottom: 4px;
+   }
+
+   .chip-button {
+       display: inline-flex;
+       align-items: center;
+       justify-content: center;
+       padding: 10px 16px;
+       border-radius: 999px;
+       border: 1px solid #dfe7f5;
+       background: #f5f7ff;
+       color: #2d3a5f;
+       font-weight: 600;
+       cursor: pointer;
+       transition: all 0.2s ease;
+       white-space: nowrap;
+   }
+
+   .chip-button.selected {
+       background: linear-gradient(135deg, #7aa8ff 0%, #4d7ae8 100%);
+       color: white;
+       border-color: #4d7ae8;
+       box-shadow: 0 4px 12px rgba(77, 122, 232, 0.3);
+   }
+
+   .chip-button:disabled {
+       opacity: 0.5;
+       cursor: not-allowed;
+   }
+
+   .select-other {
+       margin-top: 10px;
+   }
+
+   .debug-section {
        margin-top: 50px;
        padding-top: 30px;
        border-top: 2px solid #ecf0f1;
-    }
+   }
 </style>
 """, unsafe_allow_html=True)
 
@@ -416,15 +456,50 @@ def render_field(field: Dict[str, Any]) -> None:
     
     elif field_type in ("dropdown", "select"):
         values = field.get("values", [])
-        user_input = st.selectbox(
-            label="",
-            options=values,
-            key=f"dropdown_input_{st.session_state.field_version}",
-            label_visibility="collapsed",
-            disabled=is_disabled
+        selected_key = f"select_value_{st.session_state.field_version}"
+        other_key = f"select_other_{st.session_state.field_version}"
+
+        st.session_state.setdefault(selected_key, "")
+        st.session_state.setdefault(other_key, "")
+
+        if values:
+            st.markdown('<div class="chip-list">', unsafe_allow_html=True)
+            for value in values:
+                is_selected = st.session_state.get(selected_key, "") == value
+                label = f"✓ {value}" if is_selected else value
+                if st.button(
+                    label,
+                    key=f"chip_{st.session_state.field_version}_{value}",
+                    use_container_width=False,
+                    disabled=is_disabled,
+                ):
+                    if is_selected:
+                        st.session_state[selected_key] = ""
+                        st.session_state[other_key] = ""
+                    else:
+                        st.session_state[selected_key] = value
+                        st.session_state[other_key] = value
+                    st.rerun()
+            st.markdown('</div>', unsafe_allow_html=True)
+
+        other_value = st.text_input(
+            "Ou tu peux marquer autre chose...",
+            key=other_key,
+            help="Saisis une autre réponse si besoin",
+            disabled=is_disabled,
+            placeholder="Ou tu peux marquer autre chose...",
         )
+
         if st.button("➤ Envoyer", key=f"send_btn_{st.session_state.field_version}", use_container_width=True, disabled=is_disabled):
-            send_response(user_input)
+            selected_value = st.session_state.get(selected_key, "")
+            if other_value.strip():
+                final_value = other_value.strip()
+            elif selected_value:
+                final_value = selected_value
+            else:
+                st.warning("Choisis une valeur ou écris une autre réponse")
+                return
+            send_response(final_value)
     
     else:
         st.error(f"Type de champ non supporté: {field_type}")
@@ -457,9 +532,21 @@ def send_response(response: Any) -> None:
         if response_obj.status_code == 200:
             st.success("✓ Réponse envoyée !")
             print(f"✅ Réponse envoyée au serveur")
-            
+
+            field_version_key = f"select_value_{st.session_state.field_version}"
+            if field_version_key in st.session_state:
+                del st.session_state[field_version_key]
+
+            other_key = f"select_other_{st.session_state.field_version}"
+            if other_key in st.session_state:
+                del st.session_state[other_key]
+
+            for key in list(st.session_state.keys()):
+                if key.startswith(f"chip_{st.session_state.field_version}_"):
+                    del st.session_state[key]
+
             st.session_state.current_field = None
-            
+
             time.sleep(1)
             st.rerun()
         else:

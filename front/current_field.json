@@ -1,1 +1,1 @@
-{"field": {"type": "textarea", "request": "D\u00e9cris-toi", "values": [], "example": "Je m'appelle Henri", "optional": true}, "response_url": "http://localhost:8502/mock_response", "version": 9}
+{"field": {"type": "text", "request": "Quel est ton pr\u00e9nom ?", "values": [], "example": "Louis", "optional": true}, "response_url": "http://localhost:8502/mock_response", "version": 18}
