@@ -143,6 +143,7 @@ async def extract_fields():
                     # }
 
                     field_data = {
+                        "id": element_id,
                         "label": label_text.strip(),
                         "type": return_type,
                         "values": [],
