@@ -96,12 +96,12 @@ def input_field():
     
     # Type du champ
     while True:
-        field_type = input("📌 Type du champ (text/textarea/select/error, défaut: text): ").strip().lower()
+        field_type = input("📌 Type du champ (text/textarea/select/proposal, défaut: text): ").strip().lower()
         if not field_type:
             field_type = "text"
-        if field_type in ["text", "textarea", "select", "error"]:
+        if field_type in ["text", "textarea", "select", "proposal"]:
             break
-        print("   ❌ Type invalide. Choisissez: text, textarea, select ou error")
+        print("   ❌ Type invalide. Choisissez: text, textarea, select ou proposal")
     
     # Question (obligatoire)
     while True:
@@ -114,7 +114,7 @@ def input_field():
     optional = False
     values = []
 
-    if field_type != "error":
+    if field_type != "proposal":
         # Exemple (optionnel)
         example = input("📝 Exemple (optionnel, appuyez sur Enter pour passer): ").strip()
 

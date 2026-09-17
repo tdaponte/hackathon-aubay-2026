@@ -309,7 +309,9 @@ def render_conversation(field: Dict[str, Any], is_paused: bool = False) -> None:
     
     # Construire le contenu de la bulle
     bubble_content = ""
-    if request:
+    if field.get("type") == "proposal":
+        bubble_content += '<div class="message-question">Le texte est trop long. Voici une version raccourcie :</div>'
+    elif request:
         if optional:
             bubble_content += f'<div class="message-question">{request} <span class="optional-badge">Optionnel</span></div>'
         else:
@@ -355,8 +357,21 @@ def render_field(field: Dict[str, Any]) -> None:
     # Désactiver les interactions si en pause
     is_disabled = st.session_state.is_paused
     
-    if field_type == "error":
-        # Message uniquement, sans formulaire ni réponse envoyée.
+    if field_type == "proposal":
+        proposal_default = field.get("request", "")
+        user_input = st.text_area(
+            label="",
+            key=f"proposal_input_{st.session_state.field_version}",
+            label_visibility="collapsed",
+            value=proposal_default,
+            disabled=is_disabled,
+            height=180
+        )
+        if st.button("➤ Envoyer", key=f"send_btn_{st.session_state.field_version}", use_container_width=True, disabled=is_disabled):
+            if user_input:
+                send_response(user_input)
+            else:
+                st.warning("Veuillez entrer une réponse")
         return
 
     if field_type == "text":

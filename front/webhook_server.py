@@ -79,10 +79,8 @@ def receive_field():
         if "type" not in field or "request" not in field:
             return jsonify({"error": "Le champ doit avoir 'type' et 'request'"}), 400
 
-        # Un message informatif de type "error" n'attend pas de réponse métier.
-        if field.get("type") == "error" and not response_url:
-            response_url = None
-        elif not response_url:
+        # Le type "proposal" reste un vrai champ envoyable par le formulaire.
+        if not response_url:
             return jsonify({"error": "Le champ 'response_url' est requis"}), 400
         
         # Obtenir la version du champ
