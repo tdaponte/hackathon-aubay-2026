@@ -12,7 +12,7 @@ def init_llm():
     os.environ['AWS_BEARER_TOKEN_BEDROCK'] = api_key
 
     llm:ChatBedrockConverse = ChatBedrockConverse(
-        model_id = "mistral.mistral-large-2402-v1:0"
+        model_id = "minimax.minimax-m2.5"
     )
 
     return llm
