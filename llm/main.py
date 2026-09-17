@@ -1,4 +1,4 @@
-from scraping import form_scraping, fill_form
+from llm.scraping import form_scraping, fill_form
 from llm import init_llm
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.chat_history import InMemoryChatMessageHistory
