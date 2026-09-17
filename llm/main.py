@@ -1,12 +1,10 @@
 from scraping import form_scraping, fill_form
 from llm import init_llm
-from langchain_classic.chains.combine_documents import create_stuff_documents_chain
-from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.chat_history import InMemoryChatMessageHistory
-from langchain_core.runnables import RunnableWithMessageHistory
-import json
 from langchain_core.output_parsers import StrOutputParser, JsonOutputParser
-from langchain_core.documents import Document
+
+import requests
 
 
 history = {}
@@ -60,7 +58,7 @@ def generate_next_question(llm, state: FormConversationState) -> str:
     prompt = ChatPromptTemplate.from_messages([
         ("system",
          "Tu aides un utilisateur à remplir un formulaire, un champ à la "
-         "fois. Pose UNE seule question claire et naturelle en français "
+         "fois. Pose UNE seule question claire et naturelle en français"
          "pour obtenir la valeur du champ suivant.\n\n"
          "Nom du champ : {field}\n"
          "Type de réponse attendu : {field_type}\n\n"
@@ -82,7 +80,12 @@ def collect_and_fill_form(
         la réponse de l'utilisateur (str). Ex: `input` en CLI, ou une
         fonction qui envoie le message dans ton chat et attend la réponse.
     """
-    schema = form_scraping(form_url, form_selector)
+    BASE_URL = "127.0.0.1"
+    data = {}
+    response = requests.post(f"{BASE_URL}", json=data)
+    
+    print(response.json())
+    schema = response.json()
     state = FormConversationState(schema)
  
     # 1. Boucle : une question par champ manquant, jusqu'à couverture totale
