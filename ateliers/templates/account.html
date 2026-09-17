@@ -1,20 +1,18 @@
 {% extends "form_layout.html" %}
 {% block form_content %}
-<p class="form-intro">Renseignez les éléments d’identification du titulaire. Les champs marqués d’un astérisque sont requis. Le code d’adhérent est facultatif. L’ouverture de cet espace précède la sélection d’une activité et ne constitue pas une inscription à un atelier.</p>
-<div class="instructions">L’adresse électronique doit comporter un @ et un domaine avec une extension. Le secret d’authentification doit comporter au moins 12 caractères. Sa confirmation doit être identique. La date de naissance est attendue au format JJ/MM/AAAA. Le code d’adhérent, lorsqu’il est fourni, comporte exactement six chiffres. Les ateliers sont réservés aux personnes de 18 ans et plus.</div>
+<p class="form-intro">Renseignez les éléments d’identification du titulaire. L’ouverture de cet espace précède la sélection d’une activité et ne constitue pas une réservation d’atelier.</p>
+<div class="instructions">L’adresse électronique doit comporter un @ et un domaine avec une extension. Le secret d’authentification doit comporter de 12 à 128 caractères. Tous les champs sont requis.</div>
 <form method="post" action="/compte/creation" novalidate data-draft="account" data-session="{{ session.csrf }}" data-has-errors="{{ 'true' if errors else 'false' }}">
   <input type="hidden" name="csrf" value="{{ session.csrf }}">
   <div class="form-fields">
   {% for key, label, type, max_length, required, autocomplete in fields %}
-    <div class="field {{ 'wide' if key == 'member_code' else '' }}">
-      <label for="{{ key }}">{{ label }}{% if required %} <span class="required">*</span>{% endif %}</label>
-      <input id="{{ key }}" name="{{ key }}" type="{{ type }}" maxlength="{{ max_length }}" autocomplete="{{ autocomplete }}" value="{{ values.get(key, '') if type != 'password' else '' }}" {% if required %}required{% endif %}
-        {% if key in ['password','password_confirmation'] %}minlength="12"{% endif %}
-        {% if key == 'birth_date' %}placeholder="JJ/MM/AAAA" inputmode="numeric" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}"{% endif %}
-        {% if key == 'member_code' %}inputmode="numeric" pattern="[0-9]{6}"{% endif %}>
+    <div class="field {{ 'wide' if key == 'password' else '' }}">
+      <label for="{{ key }}">{{ label }} <span class="required">*</span></label>
+      <input id="{{ key }}" name="{{ key }}" type="{{ type }}" maxlength="{{ max_length }}" autocomplete="{{ autocomplete }}" value="{{ values.get(key, '') if type != 'password' else '' }}" required {% if type == 'password' %}minlength="12"{% endif %}>
     </div>
   {% endfor %}
   </div>
   <div class="form-bottom"><span>* Champs obligatoires</span><button type="submit" class="button primary">Valider <span aria-hidden="true">→</span></button></div>
 </form>
+<p>Vous disposez déjà d’un espace adhérent ? <a href="/compte/connexion">Se connecter</a>.</p>
 {% endblock %}

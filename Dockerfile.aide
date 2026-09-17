@@ -1,0 +1,11 @@
+FROM python:3.12-slim
+WORKDIR /app
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PYTHONPATH=/app
+COPY requirements-aide.txt ./
+RUN pip install --no-cache-dir -r requirements-aide.txt
+RUN python -m playwright install --with-deps chromium
+COPY aide ./aide
+COPY scripts/check_readiness.py ./scripts/check_readiness.py
+COPY .streamlit ./.streamlit
+EXPOSE 8501
+CMD ["streamlit", "run", "aide/app.py", "--server.address=0.0.0.0", "--server.port=8501", "--browser.gatherUsageStats=false"]

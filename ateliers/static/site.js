@@ -1,6 +1,16 @@
 /* Only source-site behavior: dependent fields and same-tab drafts. No AI. */
 "use strict";
 (() => {
+  document.querySelector('[data-help-launch]')?.addEventListener('submit', () => {
+    try { sessionStorage.setItem('adq:help-open', '1'); } catch (_) {}
+  });
+  document.addEventListener('visibilitychange', () => {
+    try {
+      if (document.visibilityState === 'visible' && sessionStorage.getItem('adq:help-open') === '1') {
+        window.location.reload();
+      }
+    } catch (_) {}
+  });
   const cleared = document.querySelector("[data-clear-draft]");
   if (cleared) {
     try { sessionStorage.removeItem(`adq:${cleared.dataset.session}:${cleared.dataset.clearDraft}`); } catch (_) {}
@@ -23,11 +33,6 @@
     }
     slot.disabled = !selection;
     slot.value = selection && Object.hasOwn(selection.slots, previousSlot) ? previousSlot : "";
-    const english = document.getElementById("presentation_en");
-    const isPhoto = activity.value === "photo";
-    document.getElementById("english-field").hidden = !isPhoto;
-    english.disabled = !isPhoto;
-    english.required = isPhoto;
   }
 
   function saveDraft() {

@@ -1,0 +1,14 @@
+{% extends "form_layout.html" %}
+{% block form_content %}
+<p class="form-intro">L’identification à votre espace adhérent permet de transmettre une demande de participation à une session. La connexion ne vaut pas réservation.</p>
+<div class="instructions">Renseignez l’adresse électronique et le secret d’authentification définis lors de l’ouverture de votre espace.</div>
+<form method="post" action="/compte/connexion" novalidate>
+  <input type="hidden" name="csrf" value="{{ session.csrf }}">
+  <div class="form-fields">
+    <div class="field"><label for="email">Adresse électronique de correspondance *</label><input id="email" name="email" type="email" maxlength="254" required autocomplete="username" value="{{ values.get('email', '') }}"></div>
+    <div class="field"><label for="password">Secret d’authentification *</label><input id="password" name="password" type="password" minlength="12" maxlength="128" required autocomplete="current-password"></div>
+  </div>
+  <div class="form-bottom"><span>* Champs obligatoires</span><button type="submit" class="button primary">Valider</button></div>
+</form>
+<p>Vous n’avez pas encore d’espace adhérent ? <a href="/compte/creation">Créer un compte</a>.</p>
+{% endblock %}

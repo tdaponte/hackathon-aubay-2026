@@ -20,9 +20,28 @@
       <a href="/#ateliers">Nos ateliers</a>
       <a href="/#modalites">L’association</a>
       <a class="nav-account" href="/compte/creation">Espace adhérent <span aria-hidden="true">↗</span></a>
+      <a href="/compte/connexion">Connexion</a>
+      <a href="/inscription">Réserver une activité</a>
     </nav>
   </header>
-  <main>{% block content %}{% endblock %}</main>
+  <aside class="wrap aide-launch" data-agent-ignore>
+    <form action="/aide/ouvrir" method="post" target="_blank" rel="noopener" data-help-launch>
+      <input type="hidden" name="csrf" value="{{ session.csrf }}">
+      <button class="button primary" type="submit">M’aider avec ce site</button>
+      <span>Une aide pas à pas s’ouvre dans un autre onglet.</span>
+    </form>
+    {% if identity %}
+    <div class="account-status">
+      <p>Compte connecté : <strong>{{ identity.first_name }}</strong> — {{ identity.email }}</p>
+      <a href="/inscription">Mon compte et mes réservations</a>
+      <form action="/compte/deconnexion" method="post">
+        <input type="hidden" name="csrf" value="{{ session.csrf }}">
+        <button type="submit">Se déconnecter</button>
+      </form>
+    </div>
+    {% else %}<p>Aucun compte connecté dans cet onglet.</p>{% endif %}
+  </aside>
+  <main data-account-authenticated="{{ 'true' if session.account_id else 'false' }}">{% block content %}{% endblock %}</main>
   <footer class="footer wrap">
     <a class="footer-brand" href="/">les ateliers du quartier.</a>
     <p>Faire ensemble, tout simplement.</p>

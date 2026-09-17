@@ -1,0 +1,39 @@
+{
+  "name": "Les ateliers du quartier",
+  "summary": "Tu peux réserver un atelier de peinture, de poterie ou de photo à Bordeaux. Les ateliers sont gratuits et le matériel est fourni.",
+  "location": "Maison des ateliers — Bordeaux, lieu fictif",
+  "conditions": "Participation gratuite. Matériel fourni. Tu réserves une seule séance.",
+  "stages": [
+    {
+      "id": "account",
+      "title": "Mon compte",
+      "review_title": "Vérifie les informations de ton compte",
+      "submit_label": "Simuler la création du compte",
+      "commitment": "Sur le site, cette action créera ton compte. Tu choisiras ton atelier ensuite.",
+      "after_message": "Dans ce parcours simulé, ton compte est prêt. Tu n’as pas encore réservé d’atelier.",
+      "fields": [
+        {"id": "first_name", "kind": "text", "label": "Prénom", "question": "Quel est ton prénom ?", "explanation": "Par exemple, dans Alex Martin, le prénom est Alex.", "required": true, "max_length": 80},
+        {"id": "email", "kind": "text", "format": "email", "label": "Adresse e-mail", "question": "Quelle est ton adresse e-mail ?", "explanation": "Sur le site, « adresse électronique de correspondance » veut dire adresse e-mail. Exemple fictif : alex.martin@example.test. Je ne peux pas deviner ton adresse.", "required": true, "max_length": 254},
+        {"id": "password", "kind": "secret", "label": "Mot de passe", "question": "Quel mot de passe veux-tu utiliser ?", "instruction": "Utilise un mot de passe fictif de 12 à 128 caractères pour cette simulation.", "explanation": "Sur le site, « secret d’authentification » veut dire mot de passe. Tu peux coller ton texte.", "required": true, "min_length": 12, "max_length": 128}
+      ]
+    },
+    {
+      "id": "reservation",
+      "title": "Mon atelier",
+      "review_title": "Vérifie ta réservation",
+      "submit_label": "Simuler ma réservation",
+      "commitment": "Sur le site, cette action enverra tes réponses et réservera cette séance.",
+      "show_conditions": true,
+      "fields": [
+        {"id": "activity", "kind": "choice", "label": "Atelier", "question": "Quel atelier veux-tu faire ?", "instruction": "Choisis un seul atelier.", "explanation": "Sur le site, « activité sollicitée » veut dire l’atelier que tu veux faire. Tous les niveaux sont acceptés.", "required": true, "options": [
+          {"value": "peinture", "label": "Peinture"}, {"value": "poterie", "label": "Poterie"}, {"value": "photo", "label": "Photographie"}
+        ]},
+        {"id": "slot", "kind": "choice", "label": "Date et horaire", "question": "Quand veux-tu venir ?", "instruction": "Choisis une seule séance.", "explanation": "Sur le site, « session de rattachement » veut dire la date et l’horaire de ta séance.", "required": true, "depends_on": "activity", "options_by_value": {
+          "peinture": [{"value": "peinture-03", "label": "3 octobre 2026, de 10 h à 12 h"}, {"value": "peinture-10", "label": "10 octobre 2026, de 10 h à 12 h"}],
+          "poterie": [{"value": "poterie-07", "label": "7 octobre 2026, de 14 h à 16 h"}, {"value": "poterie-14", "label": "14 octobre 2026, de 14 h à 16 h"}],
+          "photo": [{"value": "photo-10", "label": "10 octobre 2026, de 14 h à 16 h"}, {"value": "photo-17", "label": "17 octobre 2026, de 14 h à 16 h"}]
+        }}
+      ]
+    }
+  ]
+}

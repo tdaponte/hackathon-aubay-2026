@@ -1,8 +1,6 @@
 import argparse
-import os
-from pathlib import Path
 
-from .database import reset
+from .database import reset, default_path
 
 parser = argparse.ArgumentParser(description="Les ateliers du quartier — site fictif local")
 parser.add_argument("command", choices=["serve", "reset"], nargs="?", default="serve")
@@ -12,7 +10,7 @@ args = parser.parse_args()
 if args.command == "reset":
     if not args.yes:
         parser.error("La remise à zéro nécessite --yes (comptes, inscriptions et sessions de démonstration).")
-    path = Path(os.environ.get("ATELIERS_DB", Path(__file__).resolve().parent.parent / "data/ateliers.sqlite3"))
+    path = default_path()
     reset(path)
     print("Données de démonstration réinitialisées. Rechargez le navigateur.")
 else:

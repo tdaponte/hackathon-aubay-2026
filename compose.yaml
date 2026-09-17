@@ -8,3 +8,32 @@ services:
     volumes:
       - ./data:/app/data
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+  maquette:
+    build:
+      context: .
+      dockerfile: Dockerfile.aide
+    env_file:
+      - .env.bedrock
+    environment:
+      SITE_BASE_URL: http://site:8000
+      AWS_EC2_METADATA_DISABLED: "true"
+      LANGCHAIN_TRACING_V2: "false"
+      LANGSMITH_TRACING: "false"
+    depends_on:
+      site:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:8001:8501"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8501/_stcore/health', timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
