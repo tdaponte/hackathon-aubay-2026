@@ -131,7 +131,7 @@ async def extract_fields():
                         case "select":
                             return_type = field_type
                         case "checkbox":
-                            return_type = "check"
+                            return_type = "checkbox"
                         case _:
                             return_type = ""
 
