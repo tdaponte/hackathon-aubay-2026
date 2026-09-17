@@ -373,8 +373,21 @@ def render_field(field: Dict[str, Any]) -> None:
                     send_response(user_input)
                 else:
                     st.warning("Veuillez entrer une réponse")
+
+    elif field_type == "textarea":
+        user_input = st.text_area(
+            label="",
+            key=f"textarea_input_{st.session_state.field_version}",
+            label_visibility="collapsed",
+            disabled=is_disabled
+        )
+        if st.button("➤ Envoyer", key=f"send_btn_{st.session_state.field_version}", use_container_width=True, disabled=is_disabled):
+            if user_input:
+                send_response(user_input)
+            else:
+                st.warning("Veuillez entrer une réponse")
     
-    elif field_type == "checkbox":
+    elif field_type in ("checkbox", "checkbow"):
         user_input = st.checkbox(
             field.get("request", "Confirmez-vous ?"),
             key=f"checkbox_input_{st.session_state.field_version}",
@@ -383,7 +396,7 @@ def render_field(field: Dict[str, Any]) -> None:
         if st.button("➤ Envoyer", key=f"send_btn_{st.session_state.field_version}", use_container_width=True, disabled=is_disabled):
             send_response(str(user_input))
     
-    elif field_type == "dropdown":
+    elif field_type in ("dropdown", "select"):
         values = field.get("values", [])
         user_input = st.selectbox(
             label="",

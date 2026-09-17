@@ -94,6 +94,15 @@ def input_field():
     print("📝 Créer un nouveau champ")
     print("="*60)
     
+    # Type du champ
+    while True:
+        field_type = input("📌 Type du champ (text/textarea/select, défaut: text): ").strip().lower()
+        if not field_type:
+            field_type = "text"
+        if field_type in ["text", "textarea", "select"]:
+            break
+        print("   ❌ Type invalide. Choisissez: text, textarea ou select")
+    
     # Question (obligatoire)
     while True:
         request = input("\n📌 Question à poser à l'utilisateur: ").strip()
@@ -108,11 +117,17 @@ def input_field():
     optional_input = input("❓ Ce champ est optionnel ? (o/n, défaut: non): ").strip().lower()
     optional = optional_input == 'o'
     
+    values = []
+    if field_type == "select":
+        raw_values = input("🧩 Valeurs possibles (séparées par des virgules): ").strip()
+        if raw_values:
+            values = [v.strip() for v in raw_values.split(',') if v.strip()]
+
     # Créer le champ
     field = {
-        "type": "text",
+        "type": field_type,
         "request": request,
-        "values": [],
+        "values": values,
         "example": example,
         "optional": optional
     }
