@@ -77,7 +77,7 @@ async def extract_fields():
 
                 tag_name = await element.evaluate("el => el.tagName.toLowerCase()")
 
-                # Standardize our classification logic
+                # 1. Standardize our classification logic
                 if input_type == "checkbox":
                     field_type = "checkbox"
                 elif input_type == "radio":
@@ -88,6 +88,7 @@ async def extract_fields():
                 # field_type = "checkbox" if input_type == "checkbox" else tag_name
 
                 if element_id:
+                    # 2. Label classification
                     label_element = page.locator(f"label[for='{element_id}']")
                     if await label_element.count() > 0:
                         label_text = await label_element.inner_text()
@@ -124,13 +125,6 @@ async def extract_fields():
                         if await sibling_desc.count() > 0:
                             description_text = await sibling_desc.first.inner_text()
 
-                    # field_data = {
-                    #     "id": element_id,
-                    #     "label": label_text.strip(),
-                    #     "type": field_type,
-                    #     "options": []
-                    # }
-
                     match field_type:
                         case "input" | "textarea":
                             return_type = "text"
@@ -140,6 +134,13 @@ async def extract_fields():
                             return_type = "check"
                         case _:
                             return_type = ""
+
+                    # field_data = {
+                    #     "id": element_id,
+                    #     "label": label_text.strip(),
+                    #     "type": field_type,
+                    #     "options": []
+                    # }
 
                     field_data = {
                         "label": label_text.strip(),

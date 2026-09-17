@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprehensive Registration Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+        }
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+            border-bottom: 2px solid #eaeaea;
+            padding-bottom: 10px;
+        }
+        .form-section {
+            margin-bottom: 30px;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        .hint {
+            font-size: 0.85rem;
+            color: #777;
+            margin-bottom: 5px;
+        }
+        input[type="text"], input[type="email"], input[type="tel"], select, textarea {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        textarea {
+            resize: vertical;
+        }
+        .checkbox-group {
+            flex-direction: row;
+            align-items: center;
+            gap: 10px;
+        }
+        .checkbox-group input {
+            width: auto;
+        }
+        button {
+            background-color: #0056b3;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #004085;
+        }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <h1>Application Enrollment Form</h1>
+    <p>Please complete all sections of the form below. Ensure descriptions adhere to the stated character limits.</p>
+
+    <form id="applicationForm">
+        <!-- 1. PERSONAL INFORMATION SECTION -->
+        <div class="form-group">
+            <label for="firstName">First Name</label>
+            <input type="text" id="firstName" name="firstName" aria-describedby="firstNameHelp" placeholder="e.g., Jane">
+            <!-- Added explicit description using 'aria-describedby' -->
+            <small id="firstNameHelp" class="help-text">Enter your official first name as it appears on your identity documents.</small>
+        </div>
+
+        <!-- 2. PROFESSIONAL DETAILS (With character limits) -->
+        <div class="form-group">
+            <label for="profHeadline">
+                Professional Headline
+                <span class="char-limit">(Maximum 100 characters)</span>
+            </label>
+            <input type="text" id="profHeadline" name="profHeadline" maxlength="100" aria-describedby="profHeadlineHelp" placeholder="e.g., Senior Full Stack Engineer">
+            <!-- Added description: Extracted natively alongside the character constraint hint -->
+            <small id="profHeadlineHelp" class="help-text">Provide a short, punchy sentence summarizing your core professional identity.</small>
+        </div>
+
+        <div class="form-group">
+            <label for="execSummary">
+                Executive Summary
+                <span class="char-limit">(Maximum 500 characters)</span>
+            </label>
+            <textarea id="execSummary" name="execSummary" rows="4" maxlength="500" aria-describedby="execSummaryHelp" placeholder="Summarize your professional background..."></textarea>
+            <small id="execSummaryHelp" class="help-text">Highlight your key career achievements, skills, and industry experience.</small>
+        </div>
+
+        <!-- 3. PROJECT BACKGROUND -->
+        <div class="form-group">
+            <label for="projectTitle">
+                Most Recent Project Title
+                <span class="char-limit">(Maximum 150 characters)</span>
+            </label>
+            <input type="text" id="projectTitle" name="projectTitle" maxlength="150" aria-describedby="projectTitleHelp">
+            <small id="projectTitleHelp" class="help-text">The official name or internal title of the primary project you shipped recently.</small>
+        </div>
+
+        <div class="form-group">
+            <label for="detailedDesc">
+                Detailed Project Description
+                <span class="char-limit">(Maximum 2000 characters)</span>
+            </label>
+            <textarea id="detailedDesc" name="detailedDesc" rows="8" maxlength="2000" aria-describedby="detailedDescHelp"></textarea>
+            <small id="detailedDescHelp" class="help-text">Break down your tech stack, your individual contributions, and the project results or metrics achieved.</small>
+        </div>
+
+        <!-- 4. PREFERENCES & TERMS -->
+        <div class="form-group">
+            <label for="preferredDept">Preferred Department</label>
+            <select id="preferredDept" name="preferredDept" aria-describedby="deptHelp">
+                <option value="">Select an option...</option>
+                <option value="eng">Engineering</option>
+                <option value="mkt">Marketing</option>
+                <option value="ops">Operations</option>
+                <option value="hr">Human Resources</option>
+            </select>
+            <small id="deptHelp" class="help-text">Select the department that best aligns with your target career track.</small>
+        </div>
+
+        <div class="form-group checkbox-container">
+            <input type="checkbox" id="termsAgree" name="termsAgree" aria-describedby="termsHelp">
+            <label for="termsAgree">I agree to the terms of service and privacy policy.</label>
+            <small id="termsHelp" class="help-text">You must read and consent to our data privacy handling policies to finalize submission.</small>
+        </div>
+
+        <button type="submit">Submit Application</button>
+</form>
+</div>
+
+</body>
+</html>

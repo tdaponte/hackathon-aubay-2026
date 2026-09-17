@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complex Multi-Column Registration Profile</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            margin: 0;
+            padding: 30px;
+            line-height: 1.5;
+        }
+        .form-wrapper {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        h1 {
+            font-size: 1.8rem;
+            color: #111;
+            margin-bottom: 5px;
+            border-bottom: 2px solid #0056b3;
+            padding-bottom: 10px;
+        }
+        .instructions {
+            font-size: 0.95rem;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        fieldset {
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 25px;
+            margin-bottom: 25px;
+            background-color: #fff;
+        }
+        legend {
+            font-weight: bold;
+            color: #0056b3;
+            padding: 0 10px;
+            font-size: 1.1rem;
+        }
+        /* Grid definitions for left-to-right processing */
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        .form-item {
+            display: flex;
+            flex-direction: column;
+        }
+        .span-full {
+            grid-column: 1 / -1;
+        }
+        label {
+            font-size: 0.88rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #495057;
+        }
+        .char-limit {
+            font-weight: normal;
+            color: #dc3545;
+            font-size: 0.78rem;
+            margin-left: 4px;
+        }
+        input[type="text"], input[type="email"], input[type="tel"], select, textarea {
+            padding: 10px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 0.92rem;
+            background-color: #fff;
+            color: #495057;
+            box-sizing: border-box;
+            width: 100%;
+            transition: border-color 0.15s ease-in-out;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #80bdff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+        textarea {
+            resize: vertical;
+        }
+        /* Custom styles for checkbox items */
+        .checkbox-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding-top: 5px;
+        }
+        .checkbox-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            color: #495057;
+        }
+        .checkbox-row input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+        .submit-section {
+            text-align: right;
+            margin-top: 20px;
+        }
+        button[type="submit"] {
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        button[type="submit"]:hover {
+            background-color: #004085;
+        }
+    </style>
+</head>
+<body>
+
+<div class="form-wrapper">
+    <h1>System Profile & Enrollment Form</h1>
+    <p class="instructions">Please complete the sections below from left to right, moving row by row. Ensure your inputs comply with the specified character thresholds.</p>
+
+    <form action="#" method="POST">
+
+        <!-- SECTION 1: IDENTITY & ACCREDITATION -->
+        <fieldset>
+            <legend>1. Identity & Accreditation</legend>
+            <div class="grid-4">
+                <div class="form-item">
+                    <label for="honorific">Honorific Prefix <span class="char-limit">(Max 10)</span></label>
+                    <input type="text" id="honorific" name="honorific" maxlength="10" placeholder="e.g., Dr., Prof." aria-describedby="honorificHelp">
+                    <small id="honorificHelp" class="help-text">Salutation preferred for official correspondence records.</small>
+                </div>
+                <div class="form-item">
+                    <label for="givenName">Given Name <span class="char-limit">(Max 40)</span></label>
+                    <input type="text" id="givenName" name="givenName" maxlength="40" placeholder="e.g., Alex" aria-describedby="givenNameHelp">
+                    <small id="givenNameHelp" class="help-text">Your official statutory legal first name.</small>
+                </div>
+                <div class="form-item">
+                    <label for="middleInitial">Middle Initial <span class="char-limit">(Max 5)</span></label>
+                    <input type="text" id="middleInitial" name="middleInitial" maxlength="5" aria-describedby="middleInitialHelp">
+                    <small id="middleInitialHelp" class="help-text">Abbreviation identifier or secondary initial components.</small>
+                </div>
+                <div class="form-item">
+                    <label for="familyName">Family Surname <span class="char-limit">(Max 50)</span></label>
+                    <input type="text" id="familyName" name="familyName" maxlength="50" placeholder="e.g., Smith" aria-describedby="familyNameHelp">
+                    <small id="familyNameHelp" class="help-text">Your formal parental ancestral family lineage name.</small>
+                </div>
+            </div>
+        </fieldset>
+
+        <!-- SECTION 2: CONTACT GRID & LOCATION STRUCTURE -->
+        <fieldset>
+            <legend>2. Contact Routing & Core Logistics</legend>
+
+            <!-- Row 1: Emails & Primary Contact -->
+            <div class="grid-3" style="margin-bottom: 20px;">
+                <div class="form-item">
+                    <label for="primaryEmail">Primary Business Email <span class="char-limit">(Max 60)</span></label>
+                    <input type="email" id="primaryEmail" name="primaryEmail" maxlength="60" placeholder="name@company.com" aria-describedby="primaryEmailHelp">
+                    <small id="primaryEmailHelp" class="help-text">The default channel used to distribute identity validation notices.</small>
+                </div>
+                <div class="form-item">
+                    <label for="secondaryEmail">Secondary Routing Email <span class="char-limit">(Max 60)</span></label>
+                    <input type="email" id="secondaryEmail" name="secondaryEmail" maxlength="60" placeholder="backup@company.com" aria-describedby="secondaryEmailHelp">
+                    <small id="secondaryEmailHelp" class="help-text">Alternate emergency mailbox configuration for backup delivery tokens.</small>
+                </div>
+                <div class="form-item">
+                    <label for="mobileLine">Mobile Contact Line <span class="char-limit">(Max 20)</span></label>
+                    <input type="text" id="mobileLine" name="mobileLine" maxlength="20" placeholder="+1-555-0199" aria-describedby="mobileLineHelp">
+                    <small id="mobileLineHelp" class="help-text">Direct secure telephone channel for immediate 2FA device setup.</small>
+                </div>
+            </div>
+
+            <!-- Row 2: Mailing Address Information & Country Selection Dropdown -->
+            <div class="grid-4">
+                <div class="form-item span-full">
+                    <label for="streetAddress">Street Address Logistics <span class="char-limit">(Max 120)</span></label>
+                    <input type="text" id="streetAddress" name="streetAddress" maxlength="120" placeholder="123 Corporate Blvd, Suite 400" aria-describedby="streetAddressHelp">
+                    <small id="streetAddressHelp" class="help-text">Physical business delivery destination tracking string.</small>
+                </div>
+                <div class="form-item">
+                    <label for="municipality">Municipality / City <span class="char-limit">(Max 40)</span></label>
+                    <input type="text" id="municipality" name="municipality" maxlength="40" aria-describedby="municipalityHelp">
+                    <small id="municipalityHelp" class="help-text">Local metropolitan incorporation zone location.</small>
+                </div>
+                <div class="form-item">
+                    <label for="stateRegion">State / Province / Region <span class="char-limit">(Max 30)</span></label>
+                    <input type="text" id="stateRegion" name="stateRegion" maxlength="30" aria-describedby="stateRegionHelp">
+                    <small id="stateRegionHelp" class="help-text">Regional sub-administrative territory border identifier.</small>
+                </div>
+                <div class="form-item">
+                    <label for="postalIndex">Postal Routing Index <span class="char-limit">(Max 12)</span></label>
+                    <input type="text" id="postalIndex" name="postalIndex" maxlength="12" placeholder="90210" aria-describedby="postalIndexHelp">
+                    <small id="postalIndexHelp" class="help-text">Standard geographical zone code or zip classification prefix.</small>
+                </div>
+                <div class="form-item">
+                    <label for="countryAssignment">Global Country Assignment</label>
+                    <select id="countryAssignment" name="countryAssignment" aria-describedby="countryHelp">
+                        <option value="">Select United States...</option>
+                        <option value="US">United States</option>
+                        <option value="CA">Canada</option>
+                        <option value="UK">United Kingdom</option>
+                        <option value="AU">Australia</option>
+                        <option value="FR">France</option>
+                    </select>
+                    <small id="countryHelp" class="help-text">Primary sovereign geopolitical node grouping classification.</small>
+                </div>
+            </div>
+        </fieldset>
+
+        <!-- SECTION 3: ORGANIZATIONAL METRICS, DROPDOWNS, & CHECKBOXES -->
+        <fieldset>
+            <legend>3. Professional Classification & Credentials</legend>
+
+            <!-- Row 1: Profile Text Boxes & Org Dropdown -->
+            <div class="grid-3" style="margin-bottom: 20px;">
+                <div class="form-item">
+                    <label for="job-title">Official Corporate Assignment <span class="char-limit">(Max 60)</span></label>
+                    <input type="text" id="job-title" name="job-title" maxlength="60" placeholder="e.g., Principal Cloud Infrastructure Architect" required>
+                </div>
+                <div class="form-item">
+                    <label for="department-dropdown">Internal Cost Center Node <span class="char-limit">(Select 1 Option)</span></label>
+                    <select id="department-dropdown" name="department-dropdown" required>
+                        <option value="Standard">Standard</option>
+                        <option value="Advanced">Advanced</option>
+                    </select>
