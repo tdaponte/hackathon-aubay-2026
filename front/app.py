@@ -272,8 +272,7 @@ def render_header():
     with col2:
         st.markdown("""
         <div class="title-section">
-            <h1>📋 Formulaire Inscription</h1>
-            <p>Bienvenue ! Remplissez ce formulaire pour continuer</p>
+            <h1>Démo hackathon 2026</h1>
         </div>
         """, unsafe_allow_html=True)
     
