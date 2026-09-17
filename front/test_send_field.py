@@ -96,28 +96,32 @@ def input_field():
     
     # Type du champ
     while True:
-        field_type = input("📌 Type du champ (text/textarea/select, défaut: text): ").strip().lower()
+        field_type = input("📌 Type du champ (text/textarea/select/error, défaut: text): ").strip().lower()
         if not field_type:
             field_type = "text"
-        if field_type in ["text", "textarea", "select"]:
+        if field_type in ["text", "textarea", "select", "error"]:
             break
-        print("   ❌ Type invalide. Choisissez: text, textarea ou select")
+        print("   ❌ Type invalide. Choisissez: text, textarea, select ou error")
     
     # Question (obligatoire)
     while True:
-        request = input("\n📌 Question à poser à l'utilisateur: ").strip()
+        request = input("\n📌 Question / message à afficher: ").strip()
         if request:
             break
-        print("   ❌ La question est obligatoire")
+        print("   ❌ Le message est obligatoire")
     
-    # Exemple (optionnel)
-    example = input("📝 Exemple (optionnel, appuyez sur Enter pour passer): ").strip()
-    
-    # Optionnel (optionnel)
-    optional_input = input("❓ Ce champ est optionnel ? (o/n, défaut: non): ").strip().lower()
-    optional = optional_input == 'o'
-    
+    example = ""
+    optional = False
     values = []
+
+    if field_type != "error":
+        # Exemple (optionnel)
+        example = input("📝 Exemple (optionnel, appuyez sur Enter pour passer): ").strip()
+
+        # Optionnel (optionnel)
+        optional_input = input("❓ Ce champ est optionnel ? (o/n, défaut: non): ").strip().lower()
+        optional = optional_input == 'o'
+
     if field_type == "select":
         raw_values = input("🧩 Valeurs possibles (séparées par des virgules): ").strip()
         if raw_values:

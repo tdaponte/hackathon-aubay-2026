@@ -1,1 +1,1 @@
-{"field": {"type": "text", "request": "Quel est ton nom ??", "values": [], "example": "Dupooont", "optional": true}, "response_url": "http://localhost:8502/mock_response", "version": 3}
+{"field": {"type": "error", "request": "Tu t'es tromp\u00e9 dans ta r\u00e9ponse !", "values": [], "example": "", "optional": false}, "response_url": "http://localhost:8502/mock_response", "version": 4}

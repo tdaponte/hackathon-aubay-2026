@@ -356,6 +356,10 @@ def render_field(field: Dict[str, Any]) -> None:
     # Désactiver les interactions si en pause
     is_disabled = st.session_state.is_paused
     
+    if field_type == "error":
+        # Message uniquement, sans formulaire ni réponse envoyée.
+        return
+
     if field_type == "text":
         col1, col2 = st.columns([5, 1])
         
